@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/Dashboard"
+        android:enabled="true"
+        android:icon="@drawable/dashboard"
+        android:title="Dashboard"
+
+        />
+    <item
+        android:id="@+id/Needs"
+        android:enabled="true"
+        android:icon="@drawable/needs"
+        android:title="Needs"
+
+        />
+    <item
+        android:id="@+id/Wants"
+        android:enabled="true"
+        android:icon="@drawable/wants"
+        android:title="Wants"
+
+        />
+    <item
+        android:id="@+id/Savings"
+        android:enabled="true"
+        android:icon="@drawable/savings"
+        android:title="Savings"
+
+        />
+</menu>

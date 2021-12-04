@@ -10,6 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UMoney">
         <activity
+            android:name=".TransactionTakenPage"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".Savings"
+            android:exported="false" />
+        <activity
+            android:name=".Wants"
+            android:exported="false" />
+        <activity
+            android:name=".Needs"
+            android:exported="false" />
+        <activity
+            android:name =".Dashboard"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

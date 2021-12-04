@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_bottom_nav_tab.xml" value="0.26875" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_dashboard.xml" value="0.23958333333333334" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_needs.xml" value="0.2595108695652174" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_savings.xml" value="0.26875" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_transaction_given_page.xml" value="0.26875" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_wants.xml" value="0.26875" />
+        <entry key="..\:/UMoney/app/src/main/res/menu/bottomnavmenu.xml" value="0.1" />
+        <entry key="..\:/UMoney/app/src/main/res/menu/transactionButton.xml" value="0.27291666666666664" />
+        <entry key="..\:/UMoney/app/src/main/res/menu/transactionbutton.xml" value="0.26875" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
