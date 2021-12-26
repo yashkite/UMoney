@@ -28,8 +28,9 @@ public class Needs extends Fragment {
         needsGivenButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
                 Intent intent = new  Intent(getActivity(), TransactionGivenPage.class);
+                int Needs = 1;
+                intent.putExtra("From", Needs);
                 startActivity(intent);
             }
 
@@ -38,6 +39,8 @@ public class Needs extends Fragment {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent intent = new  Intent(getActivity(), TransactionTakenPage.class);
+                int Needs = 1;
+                intent.putExtra("From", Needs);
                 startActivity(intent);
             }
 
