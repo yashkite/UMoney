@@ -14,5 +14,6 @@ public class TransactionGivenPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_given_page);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 }

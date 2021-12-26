@@ -12,22 +12,18 @@
         <activity
             android:name=".TransactionTakenPage"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:label="Taken"/>
         <activity
-            android:name=".Savings"
-            android:exported="false" />
-        <activity
-            android:name=".Wants"
-            android:exported="false" />
-        <activity
-            android:name=".Needs"
-            android:exported="false" />
-        <activity
-            android:name =".Dashboard"
-            android:exported="false" />
+            android:name=".TransactionGivenPage"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:label="Given"/>
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:label="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
