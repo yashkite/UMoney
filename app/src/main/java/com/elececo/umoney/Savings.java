@@ -21,26 +21,26 @@ public class Savings extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_savings, container,    false);
         Button savingsGivenButton = (Button) rootView.findViewById(R.id.savingsGivenButton);
         Button savingsTakenButton = (Button) rootView.findViewById(R.id.savingsTakenButton);
-        savingsGivenButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Intent intent = new  Intent(getActivity(), TransactionGivenPage.class);
-                int savings = 3;
-                intent.putExtra("From", savings);
-                startActivity(intent);
-            }
-
-        });
-        savingsTakenButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Intent intent = new  Intent(getActivity(), TransactionTakenPage.class);
-                int savings = 3;
-                intent.putExtra("From", savings);
-                startActivity(intent);
-            }
-
-        });
+//        String savings = "savings";
+//
+//        savingsGivenButton.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//                Intent intent = new  Intent(getActivity(), TransactionGivenPage.class);
+//                intent.putExtra("From", savings);
+//                startActivity(intent);
+//            }
+//
+//        });
+//        savingsTakenButton.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//                Intent intent = new  Intent(getActivity(), TransactionTakenPage.class);
+//                intent.putExtra("From", savings);
+//                startActivity(intent);
+//            }
+//
+//        });
 
         return rootView;
 

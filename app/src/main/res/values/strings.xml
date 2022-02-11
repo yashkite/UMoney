@@ -3,4 +3,10 @@
     <string name="needs">Needs</string>
     <string name="given">Given</string>
     <string name="taken">Taken</string>
+    <string name="from"></string>
+    <string name="curDate"></string>
+
+
+
+
 </resources>

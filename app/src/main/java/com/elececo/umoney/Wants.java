@@ -22,26 +22,26 @@ public class Wants extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_wants, container,    false);
         Button wantsGivenButton = (Button) rootView.findViewById(R.id.wantsGivenButton);
         Button wantsTakenButton = (Button) rootView.findViewById(R.id.wantsTakenButton);
-        wantsGivenButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Intent intent = new  Intent(getActivity(), TransactionGivenPage.class);
-                int savings = 2;
-                intent.putExtra("From", savings);
-                startActivity(intent);
-            }
-
-        });
-        wantsTakenButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Intent intent = new  Intent(getActivity(), TransactionTakenPage.class);
-                int savings = 2;
-                intent.putExtra("From", savings);
-                startActivity(intent);
-            }
-
-        });
+//        String wants = "wants";
+//
+//        wantsGivenButton.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//                Intent intent = new  Intent(getActivity(), TransactionGivenPage.class);
+//                intent.putExtra("From", wants);
+//                startActivity(intent);
+//            }
+//
+//        });
+//        wantsTakenButton.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//                Intent intent = new  Intent(getActivity(), TransactionTakenPage.class);
+//                intent.putExtra("From", wants);
+//                startActivity(intent);
+//            }
+//
+//        });
 
         return rootView;
     }
