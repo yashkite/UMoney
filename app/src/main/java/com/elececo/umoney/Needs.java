@@ -1,10 +1,5 @@
 package com.elececo.umoney;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,16 +33,15 @@ public class Needs extends Fragment {
         Button needsTakenButton = (Button) rootView.findViewById(R.id.needsTakenButton);
         String Needs = "needs";
 
-        recyclerView= (RecyclerView) rootView.findViewById(R.id.recyclerNeeds);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerNeeds);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
 
 
         FirebaseRecyclerOptions<model> options =
                 new FirebaseRecyclerOptions.Builder<model>()
-                        .setQuery(FirebaseDatabase.getInstance("https://umoney-elececo-default-rtdb.asia-southeast1.firebasedatabase.app").getReference().child("givenneeds"), model.class)
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("givenneeds"), model.class)
                         .build();
-        adapTransaction=new adapterTransaction(options);
+        adapTransaction = new adapterTransaction(options);
         recyclerView.setAdapter(adapTransaction);
 
         needsGivenButton.setOnClickListener(new View.OnClickListener() {
@@ -65,11 +63,13 @@ public class Needs extends Fragment {
         });
         return rootView;
     }
+
     @Override
     public void onStart() {
         super.onStart();
         adapTransaction.startListening();
     }
+
     @Override
     public void onStop() {
         super.onStop();

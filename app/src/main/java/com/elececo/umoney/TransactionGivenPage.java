@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -69,7 +68,7 @@ public class TransactionGivenPage extends AppCompatActivity {
         Done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db = FirebaseDatabase.getInstance("https://umoney-elececo-default-rtdb.asia-southeast1.firebasedatabase.app").getReference();
+                db = FirebaseDatabase.getInstance().getReference();
 
                 String amount = Amount.getText().toString();
                 String date = curDate;
