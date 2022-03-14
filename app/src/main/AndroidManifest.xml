@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UMoney">
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".TransactionTakenPage"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
@@ -23,10 +26,10 @@
             android:name=".Needs"
             android:exported="false" />
         <activity
-            android:name =".Dashboard"
+            android:name=".Dashboard"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Google_Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
