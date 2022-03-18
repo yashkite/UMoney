@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">UMoney</string>
-    <string name="default_web_client_id1">Null</string>
+    <string name="web_client_id">null</string>
 </resources>

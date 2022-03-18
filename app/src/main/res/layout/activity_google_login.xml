@@ -6,4 +6,78 @@
     android:layout_height="match_parent"
     tools:context=".Google_Login">
 
+    <ImageView
+        android:id="@+id/umeni_logo"
+        android:layout_width="200dp"
+        android:layout_height="92dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/umeni" />
+
+    <TextView
+        android:id="@+id/details"
+        android:layout_width="190dp"
+        android:layout_height="36dp"
+        android:text="We help you manage your money and track your savings"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/umeni_logo" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/APPLE_LOGO"
+            android:layout_width="55dp"
+            android:layout_height="53dp"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/logo3" />
+
+        <android.widget.Button
+            android:id="@+id/login_with_apple"
+            android:layout_width="256.786dp"
+            android:layout_height="53dp"
+
+            android:layout_margin="16dp"
+            android:background="@drawable/b1"
+            android:text="Log in with Apple ID" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout">
+
+        <android.widget.Button
+            android:id="@+id/google_signIn"
+            android:layout_width="256.786dp"
+            android:layout_height="53dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/b1"
+            android:text="Log in with Google"
+            android:textColor="@color/black"
+            app:strokeColor="#1E1E1E" />
+
+        <ImageView
+            android:id="@+id/google_LOGO"
+            android:layout_width="55dp"
+            android:layout_height="53dp"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/logo6" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
