@@ -1,5 +1,6 @@
 {
   "project_info": {
+
     "project_number": "808920834463",
     "project_id": "umoney-41469",
     "storage_bucket": "umoney-41469.appspot.com"
@@ -7,6 +8,7 @@
   "client": [
     {
       "client_info": {
+
         "mobilesdk_app_id": "1:808920834463:android:e48b57abe2fd8899505daa",
         "android_client_info": {
           "package_name": "com.elececo.umoney"
@@ -14,12 +16,14 @@
       },
       "oauth_client": [
         {
+
           "client_id": "808920834463-k2fin37bv77kiucldsqnrrdj26u5745s.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
+
           "current_key": "AIzaSyD_fT9k9Wa7875n45wGa-39jbq_sznNVps"
         }
       ],
@@ -27,6 +31,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
+
               "client_id": "808920834463-k2fin37bv77kiucldsqnrrdj26u5745s.apps.googleusercontent.com",
               "client_type": 3
             }
