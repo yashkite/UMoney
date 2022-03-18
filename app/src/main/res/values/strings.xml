@@ -2,4 +2,8 @@
     <string name="app_name">UMoney</string>
 
     <string name="web_client_id">null</string>
+    <string name="given">Given</string>
+    <string name="taken">Taken</string>
+    <string name="needs">Needs</string>
+
 </resources>
