@@ -34,11 +34,6 @@ public class Dashboard extends Fragment {
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (acct != null) {
             String personName = acct.getDisplayName();
-            String personGivenName = acct.getGivenName();
-            String personFamilyName = acct.getFamilyName();
-            String personEmail = acct.getEmail();
-            String personId = acct.getId();
-            Uri personPhoto = acct.getPhotoUrl();
             TextView hello = (TextView) getActivity().findViewById(R.id.hello);
             hello.setText("Hello "+ personName);
         }
