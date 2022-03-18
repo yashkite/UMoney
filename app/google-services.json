@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "294943100744",
-    "firebase_url": "https://umoney-elececo-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "umoney-elececo",
-    "storage_bucket": "umoney-elececo.appspot.com"
+    "project_number": "808920834463",
+    "project_id": "umoney-41469",
+    "storage_bucket": "umoney-41469.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:294943100744:android:3bc800a88e2f71a7e86d7d",
+        "mobilesdk_app_id": "1:808920834463:android:e48b57abe2fd8899505daa",
         "android_client_info": {
           "package_name": "com.elececo.umoney"
         }
       },
       "oauth_client": [
         {
-          "client_id": "294943100744-ls5gjic0celtvlv6ocm6a0d08vrjgun1.apps.googleusercontent.com",
+          "client_id": "808920834463-k2fin37bv77kiucldsqnrrdj26u5745s.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAUqS4m18jLdDYsgJZoiZwGnwK0-b2PrKM"
+          "current_key": "AIzaSyD_fT9k9Wa7875n45wGa-39jbq_sznNVps"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "294943100744-ls5gjic0celtvlv6ocm6a0d08vrjgun1.apps.googleusercontent.com",
+              "client_id": "808920834463-k2fin37bv77kiucldsqnrrdj26u5745s.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
