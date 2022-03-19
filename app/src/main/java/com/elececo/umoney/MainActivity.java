@@ -16,18 +16,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
-    GoogleSignInClient mGoogleSignInClient;
 
+    GoogleSignInClient mGoogleSignInClient;
     BottomNavigationView bottomNavigationView;
-    MenuItem mDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_logout:
-                logout();
+                signOut();
                 return true;
 
             default:
@@ -59,20 +62,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
-    private void logout() {
-        signOut();
 
-    }
     private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                        Toast.makeText(MainActivity.this, "User SignOut", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
+        FirebaseAuth.getInstance().signOut();
+        finish();
     }
 
     Dashboard Dashboard = new Dashboard();

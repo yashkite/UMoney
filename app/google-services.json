@@ -1,38 +1,41 @@
 {
   "project_info": {
-
-    "project_number": "808920834463",
-    "project_id": "umoney-41469",
-    "storage_bucket": "umoney-41469.appspot.com"
+    "project_number": "313931665521",
+    "project_id": "umoney-d470d",
+    "storage_bucket": "umoney-d470d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-
-        "mobilesdk_app_id": "1:808920834463:android:e48b57abe2fd8899505daa",
+        "mobilesdk_app_id": "1:313931665521:android:4b1acec55eb3e486adcbd0",
         "android_client_info": {
           "package_name": "com.elececo.umoney"
         }
       },
       "oauth_client": [
         {
-
-          "client_id": "808920834463-k2fin37bv77kiucldsqnrrdj26u5745s.apps.googleusercontent.com",
+          "client_id": "313931665521-kpe15aajg1is8uf6egkp74jpk42phtsp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.elececo.umoney",
+            "certificate_hash": "3209f296df6d9bfe43db358601c25753268eba2e"
+          }
+        },
+        {
+          "client_id": "313931665521-92fufbrqhd8sr5t3vmpmk0m81p08jto3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-
-          "current_key": "AIzaSyD_fT9k9Wa7875n45wGa-39jbq_sznNVps"
+          "current_key": "AIzaSyCrlnvbzs2CGI0ZbN1sLTKcrnRTWJQtt7I"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-
-              "client_id": "808920834463-k2fin37bv77kiucldsqnrrdj26u5745s.apps.googleusercontent.com",
+              "client_id": "313931665521-92fufbrqhd8sr5t3vmpmk0m81p08jto3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
