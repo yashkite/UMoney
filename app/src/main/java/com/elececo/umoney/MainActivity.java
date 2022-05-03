@@ -1,7 +1,7 @@
 package com.elececo.umoney;
 
+import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,15 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     GoogleSignInClient mGoogleSignInClient;
     BottomNavigationView bottomNavigationView;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-
+        mAuth = FirebaseAuth.getInstance();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -49,12 +49,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         inflater.inflate(R.menu.logout, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_logout:
-                signOut();
+                msignOut();
+
                 return true;
 
             default:
@@ -63,17 +65,30 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
-    private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-        finish();
+    private void msignOut() {
+        
+        mAuth.signOut();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+        
+
+
+    }
+    private void updateUI(FirebaseUser currentUser) {
+        if (currentUser == null){
+            startActivity(new Intent(this, Google_Login.class));
+            finish();
+        }
+        else {
+            Toast.makeText(this, "User not getting signout", Toast.LENGTH_SHORT).show();
+           
+        }
     }
 
     Dashboard Dashboard = new Dashboard();
     Needs Needs = new Needs();
     Wants Wants = new Wants();
     Savings Savings = new Savings();
-
-
 
 
     @Override

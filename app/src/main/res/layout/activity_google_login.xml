@@ -17,7 +17,6 @@
         app:srcCompat="@drawable/umeni" />
 
     <TextView
-        android:id="@+id/details"
         android:layout_width="190dp"
         android:layout_height="36dp"
         android:text="We help you manage your money and track your savings"
@@ -36,14 +35,12 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
-            android:id="@+id/APPLE_LOGO"
             android:layout_width="55dp"
             android:layout_height="53dp"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/logo3" />
 
         <android.widget.Button
-            android:id="@+id/login_with_apple"
             android:layout_width="256.786dp"
             android:layout_height="53dp"
 
@@ -73,7 +70,6 @@
             app:strokeColor="#1E1E1E" />
 
         <ImageView
-            android:id="@+id/google_LOGO"
             android:layout_width="55dp"
             android:layout_height="53dp"
             android:layout_margin="16dp"

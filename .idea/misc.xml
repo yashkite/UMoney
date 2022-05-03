@@ -3,12 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/UMoney/app/src/main/res/drawable/b1.xml" value="0.1175" />
+        <entry key="..\:/UMoney/app/src/main/res/drawable/dashboard.xml" value="0.1175" />
+        <entry key="..\:/UMoney/app/src/main/res/drawable/given.xml" value="0.1175" />
+        <entry key="..\:/UMoney/app/src/main/res/drawable/splash_scre.xml" value="0.2775" />
         <entry key="..\:/UMoney/app/src/main/res/layout/activity_bottom_nav_tab.xml" value="0.26875" />
-        <entry key="..\:/UMoney/app/src/main/res/layout/activity_dashboard.xml" value="0.23958333333333334" />
-        <entry key="..\:/UMoney/app/src/main/res/layout/activity_google_login.xml" value="0.22" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_dashboard.xml" value="0.2578125" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_google_login.xml" value="0.25" />
         <entry key="..\:/UMoney/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/UMoney/app/src/main/res/layout/activity_needs.xml" value="0.2552083333333333" />
         <entry key="..\:/UMoney/app/src/main/res/layout/activity_savings.xml" value="0.26875" />
+        <entry key="..\:/UMoney/app/src/main/res/layout/activity_splash_screen.xml" value="0.27291666666666664" />
         <entry key="..\:/UMoney/app/src/main/res/layout/activity_transaction_given_page.xml" value="0.2552083333333333" />
         <entry key="..\:/UMoney/app/src/main/res/layout/activity_transaction_taken_page.xml" value="0.27291666666666664" />
         <entry key="..\:/UMoney/app/src/main/res/layout/activity_wants.xml" value="0.26875" />

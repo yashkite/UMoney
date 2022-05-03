@@ -3,7 +3,6 @@ package com.elececo.umoney;
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -59,7 +58,6 @@ public class Google_Login extends AppCompatActivity {
     }
 
 
-
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -79,15 +77,13 @@ public class Google_Login extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
 
 
-            }
-
-
-            catch (ApiException e) {
+            } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
             }
         }
     }
+
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -107,7 +103,24 @@ public class Google_Login extends AppCompatActivity {
                     }
                 });
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
 
+    private void updateUI(FirebaseUser currentUser) {
+        if (currentUser == null){
+
+        }
+        else {
+
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
+    }
 
 
 }

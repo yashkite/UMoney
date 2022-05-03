@@ -27,7 +27,6 @@ public class Needs extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_needs, container, false);
         Button needsGivenButton = (Button) rootView.findViewById(R.id.needsGivenButton);
         Button needsTakenButton = (Button) rootView.findViewById(R.id.needsTakenButton);
-        String Needs = "needs";
 
 
 
@@ -37,7 +36,6 @@ public class Needs extends Fragment {
             public void onClick(View v) {
 
                 Intent intent = new Intent(getActivity(), TransactionGivenPage.class);
-                intent.putExtra("From", Needs);
                 startActivity(intent);
             }
 
@@ -45,7 +43,6 @@ public class Needs extends Fragment {
         needsTakenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), TransactionTakenPage.class);
-                intent.putExtra("From", Needs);
                 startActivity(intent);
             }
 
