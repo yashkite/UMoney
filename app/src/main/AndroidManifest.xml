@@ -9,10 +9,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.UMoney" >
+        android:theme="@style/Theme.UMoney">
+        <activity
+            android:name=".TransactionApproveCard"
+            android:exported="false" />
+        <activity
+            android:name=".TransactionUnderApprovalListview"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".TransactionGivenPage"
+            android:exported="false"
+            android:label="Taken"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".TransactionTakenPage"
             android:exported="false"
@@ -26,7 +37,7 @@
             android:exported="false" />
         <activity
             android:name=".Google_Login"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
