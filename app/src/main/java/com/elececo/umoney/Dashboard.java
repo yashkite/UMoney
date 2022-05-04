@@ -36,12 +36,7 @@ public class Dashboard extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
-        if (acct != null) {
-            String personName = acct.getDisplayName();
-            TextView hello = (TextView) getActivity().findViewById(R.id.hello);
-            hello.setText("Hello "+ personName);
-        }
+
 
     }
 
