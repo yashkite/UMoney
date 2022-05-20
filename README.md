@@ -1,5 +1,5 @@
 # UMoney
-![Logo](![image](https://user-images.githubusercontent.com/32860312/169589143-a3cbb6e5-0134-442b-950c-d0530fa232af.png))
+![image](https://user-images.githubusercontent.com/32860312/169589143-a3cbb6e5-0134-442b-950c-d0530fa232af.png)
 ## About The Project
 This project is based on money management for anyone who likes the **20-30-50 rule**. The main objective of this project is that we are going to create a very useful **money tracking and investing app** which will track all money of a user and investment (like IND Money) and can be configured that how it's going to spend in terms of a set percentage which will be configured by the user also with manual entry system (like Khatabook).
 
