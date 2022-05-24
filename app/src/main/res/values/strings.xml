@@ -3,6 +3,21 @@
     <string name="given">Given</string>
     <string name="taken">Taken</string>
     <string name="needs">Needs</string>
+    <string-array name="TransactionCategoryList">
+        <item>Needs</item>
+        <item>Wants</item>
+        <item>Savings</item>
+        <item>Income</item>
+        <item>Loan</item>
+        <item>Uncategorised</item>
 
+    </string-array>
+    <string-array name="NeedsTagList">
+        <item>Food</item>
+        <item>Glosary</item>
+        <item>Rent</item>
+        <item>Loan Transaction</item>
+        <item>Uncategorised</item>
+    </string-array>
 
 </resources>
