@@ -14,14 +14,12 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_margin="4dp"
-
-                android:id="@+id/amountGivenTextView"
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Amount"
-                android:textSize="34sp" />
+                android:hint="With"
+                android:inputType="text">
+            </EditText>
 
             <EditText
                 android:id="@+id/amountGiven"

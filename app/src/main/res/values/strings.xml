@@ -12,12 +12,43 @@
         <item>Uncategorised</item>
 
     </string-array>
-    <string-array name="NeedsTagList">
+    <string-array name="Needs">
         <item>Food</item>
         <item>Glosary</item>
         <item>Rent</item>
-        <item>Loan Transaction</item>
+        <item>EMI</item>
         <item>Uncategorised</item>
+    </string-array>
+    <string-array name="Wants">
+        <item>Travel</item>
+        <item>Entertainment</item>
+        <item>Designer clothing</item>
+        <item>Gym memberships</item>
+        <item>Dine Out</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="Savings">
+        <item>Savings Accounts</item>
+        <item>Stocks</item>
+        <item>Fixed Deposit/Certificate of Deposit</item>
+        <item>Bonds</item>
+        <item>NPS</item>
+        <item>Real estate</item>
+        <item>EPF</item>
+        <item>PPF</item>
+    </string-array>
+    <string-array name="Income">
+        <item>Job</item>
+        <item>Rent</item>
+        <item>Freelance Work</item>
+        <item>Bonds</item>
+        <item>NPS</item>
+        <item>Real estate</item>
+        <item>EPF</item>
+        <item>PPF</item>
+
+
     </string-array>
 
 </resources>
