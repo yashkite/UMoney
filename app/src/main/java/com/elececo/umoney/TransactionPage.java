@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -55,8 +57,9 @@ public class TransactionPage extends AppCompatActivity {
                 i.put("Amount", amount.getText().toString().trim());
                 i.put("Description", description.getText().toString().trim());
 
-
-                path = "/Users/AfJoInkbyLlN3a55EPYh/TransactionList/" + selectedCategory + "/Tags/" + selectedTag + "/" + GivenOrTaken;
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String userEmail = user.getEmail();
+                path = "/Users/"+userEmail+"/TransactionList/" + selectedCategory + "/Tags/" + selectedTag + "/" + GivenOrTaken;
 
                 String checkwith = with.getText().toString();
                 String checkamount = amount.getText().toString();
@@ -67,6 +70,7 @@ public class TransactionPage extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"With and Amount cannot be empty",Toast.LENGTH_SHORT).show();
                 }else {
                     dbroot.collection(path).add(i);
+                    finish();
                 }
 
 
