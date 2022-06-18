@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 
 public class Needs extends Fragment {
     Context context;
-
     public Needs() {
         // require a empty public constructor
     }
@@ -34,15 +33,18 @@ public class Needs extends Fragment {
 
         needsGivenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                Intent intent = new Intent(getActivity(), TransactionGivenPage.class);
+                Intent intent = new Intent(getActivity(), TransactionPage.class);
+                String button= "Given";
+               intent.putExtra("WhichButton", button );
                 startActivity(intent);
             }
 
         });
         needsTakenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), TransactionTakenPage.class);
+                Intent intent = new Intent(getActivity(), TransactionPage.class);
+                String button= "Taken";
+                intent.putExtra("WhichButton", button );
                 startActivity(intent);
             }
 

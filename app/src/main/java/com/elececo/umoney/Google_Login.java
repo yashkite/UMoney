@@ -2,6 +2,7 @@ package com.elececo.umoney;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;

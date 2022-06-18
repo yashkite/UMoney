@@ -23,12 +23,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".TransactionGivenPage"
-            android:exported="false"
-            android:label="Taken"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".TransactionTakenPage"
+            android:name=".TransactionPage"
             android:exported="false"
             android:label="Taken"
             android:parentActivityName=".MainActivity" />

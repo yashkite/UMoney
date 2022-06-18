@@ -22,27 +22,29 @@ public class Wants extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_wants, container,    false);
         Button wantsGivenButton = (Button) rootView.findViewById(R.id.wantsGivenButton);
         Button wantsTakenButton = (Button) rootView.findViewById(R.id.wantsTakenButton);
-//        String wants = "wants";
-//
-//        wantsGivenButton.setOnClickListener(new View.OnClickListener(){
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                Intent intent = new  Intent(getActivity(), TransactionGivenPage.class);
-//                intent.putExtra("From", wants);
-//                startActivity(intent);
-//            }
-//
-//        });
-//        wantsTakenButton.setOnClickListener(new View.OnClickListener(){
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                Intent intent = new  Intent(getActivity(), TransactionTakenPage.class);
-//                intent.putExtra("From", wants);
-//                startActivity(intent);
-//            }
-//
-//        });
 
+
+
+
+
+        wantsGivenButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), TransactionPage.class);
+                String button= "Given";
+                intent.putExtra("WhichButton", button );
+                startActivity(intent);
+            }
+
+        });
+        wantsTakenButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), TransactionPage.class);
+                String button= "Taken";
+                intent.putExtra("WhichButton", button );
+                startActivity(intent);
+            }
+        });
         return rootView;
+
     }
 }
