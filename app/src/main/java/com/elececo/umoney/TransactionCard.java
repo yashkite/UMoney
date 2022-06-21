@@ -1,14 +1,39 @@
 package com.elececo.umoney;
 
-import androidx.appcompat.app.AppCompatActivity;
+public class TransactionCard{
 
-import android.os.Bundle;
+    ;
+    String With, Description, Amount;
 
-public class TransactionCard extends AppCompatActivity {
+public TransactionCard(){}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_card);
+    public TransactionCard(String amount, String with, String description) {
+        Amount = amount;
+        With = with;
+        Description = description;
+    }
+
+    public String getAmount() {
+        return Amount;
+    }
+
+    public void setAmount(String amount) {
+        Amount = amount;
+    }
+
+    public String getWith() {
+        return With;
+    }
+
+    public void setWith(String with) {
+        With = with;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
     }
 }
