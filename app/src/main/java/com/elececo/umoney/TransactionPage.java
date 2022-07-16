@@ -26,25 +26,29 @@ public class TransactionPage extends AppCompatActivity {
     // variables for spinners
     EditText with, amount, description;
     Button done, cancel;
+    FirebaseFirestore dbroot;
     private Spinner Category, Tags;
     private ArrayList category;
-    private String selectedCategory, selectedTag, path;
+    private String selectedCategory, selectedTag;
     private ArrayAdapter<CharSequence> CategoryAdapter, TagAdapter;
-    FirebaseFirestore dbroot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_page);
+
+//      Grab the value send by intent from fragment to use while making path
         Intent i = getIntent();
         String GivenOrTaken = i.getStringExtra("WhichButton");
+
+
         dbroot = FirebaseFirestore.getInstance();
-        with = (EditText) findViewById(R.id.with);
-        amount = (EditText) findViewById(R.id.amountGiven);
-        description = (EditText) findViewById(R.id.descriptionGiven);
+        with = findViewById(R.id.with);
+        amount = findViewById(R.id.amountGiven);
+        description = findViewById(R.id.descriptionGiven);
 
 
-        done = (Button) findViewById(R.id.doneGiven);
+        done = findViewById(R.id.doneGiven);
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,30 +60,33 @@ public class TransactionPage extends AppCompatActivity {
                 i.put("With", with.getText().toString().trim());
                 i.put("Amount", amount.getText().toString().trim());
                 i.put("Description", description.getText().toString().trim());
+                i.put("Tag", selectedTag.trim());
+                i.put("GivenOrTaken", GivenOrTaken.trim());
+
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String userEmail = user.getEmail();
-                path = "/Users/"+userEmail+"/TransactionList/" + selectedCategory + "/Tags/" + selectedTag + "/" + GivenOrTaken;
+//              path = "/Users/" + userEmail + selectedCategory + "/Tags/" + selectedTag + "/" + GivenOrTaken;
 
+//              checking the value is not empty before making entry for required values only
                 String checkwith = with.getText().toString();
                 String checkamount = amount.getText().toString();
-                String checkdescription = description.getText().toString();
-
-
-                if(checkwith.matches("")||checkamount.matches("")){
-                    Toast.makeText(getApplicationContext(),"With and Amount cannot be empty",Toast.LENGTH_SHORT).show();
-                }else {
-                    dbroot.collection(path).add(i);
-                    finish();
+                if (checkwith.matches("") || checkamount.matches("")) {
+                    Toast.makeText(getApplicationContext(), "With and Amount cannot be empty", Toast.LENGTH_SHORT).show();
                 }
 
+//              if all things is ok then write operation will be executed and activity will be closed
+                else {
+                    dbroot.collection("Users").document(userEmail).collection(selectedCategory).add(i);
+                    finish();
+                }
 
 
             }
         });
 
-
-        cancel = (Button) findViewById(R.id.cancelGiven);
+//      cancel button will finish the activity and comeback to the previous activity
+        cancel = findViewById(R.id.cancelGiven);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,20 +94,23 @@ public class TransactionPage extends AppCompatActivity {
             }
         });
 
-
         Category = findViewById(R.id.Categories);
+
+
         CategoryAdapter = ArrayAdapter.createFromResource(this, R.array.TransactionCategoryList, android.R.layout.simple_spinner_item);
         CategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Category.setAdapter(CategoryAdapter);
 
-        // Created dependant spinner logic using switch case
         Category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long Id) {
                 Tags = findViewById(R.id.Tags);
+                //      getting from which category its comes from and saving it inside selectedCategory veriable
                 selectedCategory = Category.getSelectedItem().toString();
-
                 int parentId = parent.getId();
+
+
+                // Created dependant spinner logic using switch case
                 if (parentId == R.id.Categories) {
                     switch (selectedCategory) {
                         case "Needs":
@@ -116,6 +126,7 @@ public class TransactionPage extends AppCompatActivity {
                         default:
                             break;
                     }
+
                     TagAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
                     Tags.setAdapter(TagAdapter);
 

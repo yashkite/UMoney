@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Savings">
+
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -13,23 +15,36 @@
 
 
         <Button
+            android:id="@+id/savingsGivenButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/savingsGivenButton"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            android:text="@string/given"
-            />
+            android:text="@string/given" />
 
         <Button
+            android:id="@+id/savingsTakenButton"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/savingsTakenButton"
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:text="@string/taken" />
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/savingsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="1.0" />
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -54,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="$ 2000"
+                android:text="$2000"
                 android:textAlignment="center"
 
                 android:textSize="20sp" />
@@ -72,12 +87,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
 
-                android:text="$ 0"
+                android:text="$0"
                 android:textAlignment="center"
                 android:textSize="20sp" />
         </LinearLayout>
 
 
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

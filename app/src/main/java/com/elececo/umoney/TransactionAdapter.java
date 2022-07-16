@@ -24,32 +24,37 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @NonNull
     @Override
     public TransactionAdapter.TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.activity_transaction_card,parent, false);
-
+        View v = LayoutInflater.from(context).inflate(R.layout.activity_transaction_card, parent, false);
         return new TransactionViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TransactionAdapter.TransactionViewHolder holder, int position) {
-
         TransactionCard transactionCard = transactionCardArrayList.get(position);
-        holder.amount.setText(transactionCard.Amount);
+        if (transactionCard.GivenOrTaken.matches("Given")) {
+            holder.amountGiven.setText(transactionCard.Amount);
+        } else {
+            holder.amountTaken.setText(transactionCard.Amount);
+        }
         holder.with.setText(transactionCard.With);
-
-
-
+        holder.tag.setText(transactionCard.Tag);
     }
 
     @Override
     public int getItemCount() {
         return transactionCardArrayList.size();
     }
-    public static class TransactionViewHolder extends RecyclerView.ViewHolder{
-TextView amount,  with;
+
+    public static class TransactionViewHolder extends RecyclerView.ViewHolder {
+        TextView amountGiven,amountTaken, with, tag;
+
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
-            amount = itemView.findViewById(R.id.T_Amount);
+
+            amountGiven = itemView.findViewById(R.id.T_Amount_Given);
+            amountTaken = itemView.findViewById(R.id.T_Amount_Taken);
             with = itemView.findViewById(R.id.T_with);
+            tag = itemView.findViewById(R.id.Show_tag);
         }
     }
 }

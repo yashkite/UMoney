@@ -1,6 +1,7 @@
 # UMoney
+![image](https://user-images.githubusercontent.com/32860312/169589143-a3cbb6e5-0134-442b-950c-d0530fa232af.png)
 ## About The Project
-This project is based on money management for anyone who likes the **20-30-50 rule**. The main objective of this project is that we are going to create a very useful **money tracking and investing app** which will track all money of a user and investment (like IND Money) and can be configured that how it's going to spend in terms of a set percentage, which will be configured by the user also with manual entry system (like Khatabook).
+This project is based on money management for anyone who likes the **20-30-50 rule**. The main objective of this project is that we are going to create a very useful **money tracking and investing app** which will track all money of a user and investment (like IND Money) and can be configured that how it's going to spend in terms of a set percentage which will be configured by the user also with manual entry system (like Khatabook).
 
 > Why we are doing this.
 
@@ -14,19 +15,22 @@ This project is based on money management for anyone who likes the **20-30-50 ru
 - The entry process takes too much time
 - Every entry is done manually
 
+
+
+
 ### Built With
 - Java / Kotlin
 - XML
 - Python
 
 ## Getting Started
-If you like to test this pizza slice then you can clone this project to your Android Studio. You can follow the below step to get your tummy full.
-
+If you like to test this pizza slice then you can clone this project to your Android Studio you can follow the below step to get your tummy full.
 ### Prerequisites
 - Install Android Studio IDE for writing android code
 - Install Git for version control
 
-YouTube will guide you to properly install them.
+
+YouTube will guide you to properly install them
 
 **Where do you Testing your Results?**
 - You can make AVD inside the android studio or you can connect your phone to pc and install and test it on your device
@@ -34,14 +38,14 @@ YouTube will guide you to properly install them.
 ### Installation
 If you cleared all the prerequisites then you can start contributing to this project by following these steps.
 1. Make yourself a developer on Github
-    - Click on [Generate token](https://github.com/settings/tokens "Generate token")
-    - Check all the boxes for permission & set No expiration for this token and generate the token & copy it
+   - Click on [Generate token](https://github.com/settings/tokens "Generate token")
+   - Check all the boxes for permission & set No expiration for this token and generate the token & copy it
 1. Clone the Project
-    - Open android studio
-    - Close the preexisting project if any, then click on an open project from VCS
-    - On the Popup window click on Github, if you have not login already then click on login with the token, then paste the token and login
-    - Now select the first option repository URL option, go to Umoney Github page in your browser and copy the link under the Code option & paste it under the repository URL option in android studio and click on clone
-    - It will download a project and make a local copy of a project automatically.
+   - Open android studio
+   - Close the preexisting project if any, then click on an open project from VCS
+   - On the Popup window click on Github, if you have not login already then click on login with the token, then paste the token and login
+   - Now select the first option repository URL option, go to Umoney Github page in your browser and copy the link under the Code option & paste it under the repository URL option in android studio and click on clone
+   - It will download a project and make a local copy of a project automatically.
 1. Setup a Git For version control
    If you set up the git properly then the git option will be available in your tab android studio and you can also see all the versions via clicking git on the left bottom side.
 
@@ -82,3 +86,4 @@ Join this discord server to get updated daily about this project and be able to 
 - [IND Money](https://www.indmoney.com/ "IND Money")
 - [Figma](https://www.figma.com/ "Figma")
 - [Android studio](https://developer.android.com/studio "Android studio")
+
