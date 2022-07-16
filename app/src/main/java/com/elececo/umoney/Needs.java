@@ -80,11 +80,11 @@ public class Needs extends Fragment {
         String userEmail = user.getEmail();
         db.collection("Users")
                 .document(userEmail)
-                .collection("TransactionList")
-                .document("Needs")
-                .collection("Tags")
-                .document("Food")
-                .collection("Given")
+//                .collection("TransactionList")
+                .collection("Needs")
+//                .collection("Tags")
+//                .document("Food")
+//                .collection("Given")
                 .orderBy("With", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override

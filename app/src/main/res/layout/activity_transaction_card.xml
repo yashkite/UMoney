@@ -64,21 +64,32 @@
                     android:text="abc@okaxis">
 
                 </TextView>
-            </LinearLayout>
 
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:textColor="#00FF00"
+                android:id="@+id/Show_tag"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="2.5"
+                android:text="">
+
+            </TextView>
 
         </LinearLayout>
 
         <TextView
             android:layout_width="0dp"
-            android:id="@+id/T_Amount"
+            android:id="@+id/T_Amount_Given"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:textColor="#FF0000"
             android:layout_weight="2.5"
             android:gravity="center"
             android:background="#ffcccb"
-            android:text="$ 6000">
+            android:text="">
 
         </TextView>
 
@@ -86,12 +97,13 @@
             android:layout_width="0dp"
             android:gravity="center"
             android:textColor="#00FF00"
-
+            android:id="@+id/T_Amount_Taken"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="2.5"
-            android:text="$ 60,051">
+            android:text="">
 
         </TextView>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
