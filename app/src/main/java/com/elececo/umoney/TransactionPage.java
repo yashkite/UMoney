@@ -1,31 +1,49 @@
 package com.elececo.umoney;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class TransactionPage extends AppCompatActivity {
+public class TransactionPage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+
+
+    int day, month, year, hour, minute;
+    int myday, myMonth, myYear, myHour, myMinute;
 
     // variables for spinners
+    TextView datetext, timetext;
     EditText with, amount, description;
-    Button done, cancel;
+    Button done, cancel, datentime;
     FirebaseFirestore dbroot;
     private Spinner Category, Tags;
     private ArrayList category;
@@ -36,6 +54,32 @@ public class TransactionPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_page);
+        datetext = findViewById(R.id.dateTextView);
+        timetext = findViewById(R.id.timeTextView);
+
+        Calendar calendar = Calendar.getInstance();
+        myYear = calendar.get(Calendar.YEAR);
+        myMonth = calendar.get(Calendar.MONTH);
+        myday = calendar.get(Calendar.DAY_OF_MONTH);
+        myHour = calendar.get(Calendar.HOUR);
+        myMinute = calendar.get(Calendar.MINUTE);
+datetext.setText(myday+"/"+myMonth+"/"+myYear);
+timetext.setText(myHour+":"+myMinute);
+
+        datentime = findViewById(R.id.dateAndTimePicker);
+        datentime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(TransactionPage.this, TransactionPage.this, year, month, day);
+                datePickerDialog.show();
+
+            }
+        });
+
 
 //      Grab the value send by intent from fragment to use while making path
         Intent i = getIntent();
@@ -56,12 +100,16 @@ public class TransactionPage extends AppCompatActivity {
             }
 
             private void insertdata() {
-                Map<String, String> i = new HashMap<>();
+                String datentime = myYear+"-"+myMonth+"-"+myday+"T"+myHour+":"+myMinute+":00Z";
+
+                Map<String, Object> i = new HashMap<>();
                 i.put("With", with.getText().toString().trim());
                 i.put("Amount", amount.getText().toString().trim());
                 i.put("Description", description.getText().toString().trim());
                 i.put("Tag", selectedTag.trim());
                 i.put("GivenOrTaken", GivenOrTaken.trim());
+                i.put("Timestamp", getDateFromString(datentime));
+
 
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -153,6 +201,45 @@ public class TransactionPage extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        Calendar c = Calendar.getInstance();
+
+        myYear = year;
+        myday = dayOfMonth;
+        myMonth = month;
+        hour = c.get(Calendar.HOUR);
+        minute = c.get(Calendar.MINUTE);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(TransactionPage.this, TransactionPage.this, hour, minute, DateFormat.is24HourFormat(this));
+        timePickerDialog.show();
+
+
+
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        myHour = hourOfDay;
+        myMinute = minute;
+        datetext.setText(myday+"/"+myMonth+"/"+myYear);
+        timetext.setText(myHour+":"+myMinute);
+
+    }
+
+    static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+    public Date getDateFromString(String datetoSaved) {
+
+        try {
+            Date date = format.parse(datetoSaved);
+            return date;
+        } catch (ParseException e) {
+            return null;
+        }
 
     }
 

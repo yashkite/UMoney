@@ -81,6 +81,7 @@ public class Google_Login extends AppCompatActivity {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
+                Log.e(TAG,"lest see: ",e);
             }
         }
     }

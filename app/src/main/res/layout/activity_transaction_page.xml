@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,7 +8,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -15,12 +16,11 @@
             android:orientation="vertical">
 
             <EditText
+                android:id="@+id/with"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="With"
-                android:id="@+id/with"
-                android:inputType="text">
-            </EditText>
+                android:inputType="text"></EditText>
 
             <EditText
                 android:id="@+id/amountGiven"
@@ -42,15 +42,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="4dp">
+                android:layout_margin="4dp"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:text="Categories"
-               android:layout_width="0dp"
-                    android:textSize="20sp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="40">
+                    android:layout_weight="40"
+                    android:text="Categories"
+                    android:textSize="20sp">
 
                 </TextView>
 
@@ -64,61 +64,87 @@
                 </Spinner>
 
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_margin="4dp"
-            android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="40"
+                    android:text="Tags"
+                    android:textSize="20sp">
+
+                </TextView>
+
+                <Spinner
+                    android:id="@+id/Tags"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="60"
+                    android:hint="Tags"
+                    android:spinnerMode="dropdown">
+
+                </Spinner>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/dateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:padding="8dp"></TextView>
+                <TextView
+                    android:id="@+id/timeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:padding="8dp"></TextView>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/dateAndTimePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Date And Time" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/cancelGiven"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textSize="24sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="Tags"
-                android:layout_weight="40">
+        <Button
+            android:id="@+id/doneGiven"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="Done"
+            android:textSize="24sp" />
 
-            </TextView>
-            <Spinner
-                android:id="@+id/Tags"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="60"
-                android:hint="Tags"
-                android:spinnerMode="dropdown">
-
-            </Spinner>
-        </LinearLayout>
-
-
-        <CalendarView
-            android:layout_marginTop="20dp"
-            android:id="@+id/calendarGiven"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <Button
-               android:layout_margin="4dp"
-               android:id="@+id/cancelGiven"
-               android:layout_width="0dp"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:text="Cancel"
-               android:textSize="24sp" />
-           <Button
-               android:layout_margin="4dp"
-               android:id="@+id/doneGiven"
-               android:layout_width="0dp"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:text="Done"
-               android:textSize="24sp" />
-
-       </LinearLayout>
     </LinearLayout>
-</ScrollView></androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
