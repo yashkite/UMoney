@@ -18,15 +18,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,9 +34,12 @@ import java.util.Map;
 public class TransactionPage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
 
-    int day, month, year, hour, minute;
-    int myday, myMonth, myYear, myHour, myMinute;
+    static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
+    static final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd");
+    static final SimpleDateFormat timeformat = new SimpleDateFormat("HH:mma");
+    int day, month, year, hour, minute;
+    int myday, myMonth, myYear, myHour, myMinute, myAM_PM;
     // variables for spinners
     TextView datetext, timetext;
     EditText with, amount, description;
@@ -54,6 +54,8 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_page);
+
+
         datetext = findViewById(R.id.dateTextView);
         timetext = findViewById(R.id.timeTextView);
 
@@ -63,8 +65,8 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
         myday = calendar.get(Calendar.DAY_OF_MONTH);
         myHour = calendar.get(Calendar.HOUR);
         myMinute = calendar.get(Calendar.MINUTE);
-datetext.setText(myday+"/"+myMonth+"/"+myYear);
-timetext.setText(myHour+":"+myMinute);
+        myAM_PM = calendar.get(Calendar.AM_PM);
+        setdateontextview();
 
         datentime = findViewById(R.id.dateAndTimePicker);
         datentime.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +102,7 @@ timetext.setText(myHour+":"+myMinute);
             }
 
             private void insertdata() {
-                String datentime = myYear+"-"+myMonth+"-"+myday+"T"+myHour+":"+myMinute+":00Z";
+                String datentime = myYear + "-" + myMonth + "-" + myday + "T" + myHour + ":" + myMinute + ":00Z";
 
                 Map<String, Object> i = new HashMap<>();
                 i.put("With", with.getText().toString().trim());
@@ -109,7 +111,6 @@ timetext.setText(myHour+":"+myMinute);
                 i.put("Tag", selectedTag.trim());
                 i.put("GivenOrTaken", GivenOrTaken.trim());
                 i.put("Timestamp", getDateFromString(datentime));
-
 
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -204,19 +205,46 @@ timetext.setText(myHour+":"+myMinute);
 
     }
 
+    private void setdateontextview() {
+        String amorpm;
+        if (myAM_PM == 0) {
+            amorpm = "AM";
+        } else if (myAM_PM == 1) {
+            amorpm = "PM";
+        } else {
+            throw new RuntimeException("myAM_PM is having wrong value than expected");
+        }
+
+        String datentime = myday + "/" + myMonth + "/" + myYear + " " + myHour + ":" + myMinute + " " + amorpm;
+        SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy hh:mm aa");
+        Date d = null;
+        try {
+            d = f.parse(datentime);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat time = new SimpleDateFormat("hh:mm a");
+        String showDate = "Date: " + date.format(d);
+        String showTime = "Time: " + time.format(d);
+
+        datetext.setText(showDate);
+        timetext.setText(showTime);
+
+    }
+
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
         Calendar c = Calendar.getInstance();
-
         myYear = year;
         myday = dayOfMonth;
         myMonth = month;
         hour = c.get(Calendar.HOUR);
         minute = c.get(Calendar.MINUTE);
+
         TimePickerDialog timePickerDialog = new TimePickerDialog(TransactionPage.this, TransactionPage.this, hour, minute, DateFormat.is24HourFormat(this));
         timePickerDialog.show();
-
 
 
     }
@@ -225,12 +253,9 @@ timetext.setText(myHour+":"+myMinute);
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         myHour = hourOfDay;
         myMinute = minute;
-        datetext.setText(myday+"/"+myMonth+"/"+myYear);
-        timetext.setText(myHour+":"+myMinute);
+        setdateontextview();
 
     }
-
-    static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     public Date getDateFromString(String datetoSaved) {
 

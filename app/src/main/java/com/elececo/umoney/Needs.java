@@ -85,7 +85,7 @@ public class Needs extends Fragment {
 //                .collection("Tags")
 //                .document("Food")
 //                .collection("Given")
-                .orderBy("With", Query.Direction.DESCENDING)
+                .orderBy("Timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {

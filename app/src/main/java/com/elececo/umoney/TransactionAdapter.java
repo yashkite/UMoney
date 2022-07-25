@@ -9,7 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
@@ -31,6 +34,21 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionAdapter.TransactionViewHolder holder, int position) {
         TransactionCard transactionCard = transactionCardArrayList.get(position);
+
+
+        long datentime = transactionCard.Timestamp.getSeconds();
+
+        Date timeD = new Date(datentime * 1000);
+        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat time = new SimpleDateFormat("hh:mm a");
+        String showDate = date.format(timeD);
+        String showTime = time.format(timeD);
+
+        holder.date.setText(showDate);
+        holder.time.setText(showTime);
+
+
+
         if (transactionCard.GivenOrTaken.matches("Given")) {
             holder.amountGiven.setText(transactionCard.Amount);
         } else {
@@ -46,7 +64,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
-        TextView amountGiven,amountTaken, with, tag;
+        TextView amountGiven,amountTaken, with, tag, date, time;
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -55,6 +73,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             amountTaken = itemView.findViewById(R.id.T_Amount_Taken);
             with = itemView.findViewById(R.id.T_with);
             tag = itemView.findViewById(R.id.Show_tag);
+            date = itemView.findViewById(R.id.TC_Date);
+            time = itemView.findViewById(R.id.TC_Time);
+
         }
     }
 }
