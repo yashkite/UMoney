@@ -7,6 +7,7 @@
     tools:context=".TransactionPage">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,14 +17,14 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/with"
+                android:id="@+id/TP_with"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="With"
                 android:inputType="text"></EditText>
 
             <EditText
-                android:id="@+id/amountGiven"
+                android:id="@+id/TP_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Rs."
@@ -31,7 +32,7 @@
                 android:minHeight="48dp" />
 
             <EditText
-                android:id="@+id/descriptionGiven"
+                android:id="@+id/TP_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -55,7 +56,7 @@
                 </TextView>
 
                 <Spinner
-                    android:id="@+id/Categories"
+                    android:id="@+id/TP_categories"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="60"
@@ -82,7 +83,7 @@
                 </TextView>
 
                 <Spinner
-                    android:id="@+id/Tags"
+                    android:id="@+id/TP_tags"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="60"
@@ -97,22 +98,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <TextView
-                    android:id="@+id/dateTextView"
+                    android:id="@+id/TP_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:padding="8dp"></TextView>
+                    android:padding="8dp"
+                    android:text=""></TextView>
+
                 <TextView
-                    android:id="@+id/timeTextView"
+                    android:id="@+id/TP_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:padding="8dp"></TextView>
+                    android:padding="8dp"
+                    android:text=""></TextView>
             </LinearLayout>
 
             <Button
-                android:id="@+id/dateAndTimePicker"
+                android:id="@+id/TP_dateAndTimePicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -126,10 +129,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        app:layout_constraintVertical_bias="1.0">
 
         <Button
-            android:id="@+id/cancelGiven"
+            android:id="@+id/TP_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -138,7 +145,7 @@
             android:textSize="24sp" />
 
         <Button
-            android:id="@+id/doneGiven"
+            android:id="@+id/TP_done"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"

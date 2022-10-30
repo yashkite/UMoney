@@ -56,8 +56,8 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
         setContentView(R.layout.activity_transaction_page);
 
 
-        datetext = findViewById(R.id.dateTextView);
-        timetext = findViewById(R.id.timeTextView);
+        datetext = findViewById(R.id.TP_date);
+        timetext = findViewById(R.id.TP_time);
 
         Calendar calendar = Calendar.getInstance();
         myYear = calendar.get(Calendar.YEAR);
@@ -68,7 +68,7 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
         myAM_PM = calendar.get(Calendar.AM_PM);
         setdateontextview();
 
-        datentime = findViewById(R.id.dateAndTimePicker);
+        datentime = findViewById(R.id.TP_dateAndTimePicker);
         datentime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,12 +89,12 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
 
 
         dbroot = FirebaseFirestore.getInstance();
-        with = findViewById(R.id.with);
-        amount = findViewById(R.id.amountGiven);
-        description = findViewById(R.id.descriptionGiven);
+        with = findViewById(R.id.TP_with);
+        amount = findViewById(R.id.TP_amount);
+        description = findViewById(R.id.TP_description);
 
 
-        done = findViewById(R.id.doneGiven);
+        done = findViewById(R.id.TP_done);
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,15 +102,20 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
             }
 
             private void insertdata() {
+                String randomID = FirebaseFirestore.getInstance().collection("Transaction").document().getId();
+
                 String datentime = myYear + "-" + myMonth + "-" + myday + "T" + myHour + ":" + myMinute + ":00Z";
 
                 Map<String, Object> i = new HashMap<>();
+                i.put("DocID", randomID);
                 i.put("With", with.getText().toString().trim());
                 i.put("Amount", amount.getText().toString().trim());
                 i.put("Description", description.getText().toString().trim());
+                i.put("Category", selectedCategory);
                 i.put("Tag", selectedTag.trim());
                 i.put("GivenOrTaken", GivenOrTaken.trim());
                 i.put("Timestamp", getDateFromString(datentime));
+
 
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -126,7 +131,7 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
 
 //              if all things is ok then write operation will be executed and activity will be closed
                 else {
-                    dbroot.collection("Users").document(userEmail).collection(selectedCategory).add(i);
+                    dbroot.collection("Users").document(userEmail).collection("Transactions").document(randomID).set(i);
                     finish();
                 }
 
@@ -135,7 +140,7 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
         });
 
 //      cancel button will finish the activity and comeback to the previous activity
-        cancel = findViewById(R.id.cancelGiven);
+        cancel = findViewById(R.id.TP_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,7 +148,7 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
             }
         });
 
-        Category = findViewById(R.id.Categories);
+        Category = findViewById(R.id.TP_categories);
 
 
         CategoryAdapter = ArrayAdapter.createFromResource(this, R.array.TransactionCategoryList, android.R.layout.simple_spinner_item);
@@ -153,14 +158,14 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
         Category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long Id) {
-                Tags = findViewById(R.id.Tags);
+                Tags = findViewById(R.id.TP_tags);
                 //      getting from which category its comes from and saving it inside selectedCategory veriable
                 selectedCategory = Category.getSelectedItem().toString();
                 int parentId = parent.getId();
 
 
                 // Created dependant spinner logic using switch case
-                if (parentId == R.id.Categories) {
+                if (parentId == R.id.TP_categories) {
                     switch (selectedCategory) {
                         case "Needs":
                             TagAdapter = ArrayAdapter.createFromResource(parent.getContext(), R.array.Needs, R.layout.support_simple_spinner_dropdown_item);

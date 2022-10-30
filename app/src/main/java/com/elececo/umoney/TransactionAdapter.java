@@ -1,15 +1,31 @@
 package com.elececo.umoney;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.ParseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.ViewHolder;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +34,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     Context context;
     ArrayList<TransactionCard> transactionCardArrayList;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore dbroot = FirebaseFirestore.getInstance();
+
 
     public TransactionAdapter(Context context, ArrayList<TransactionCard> transactionArrayList) {
         this.context = context;
@@ -35,7 +54,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionAdapter.TransactionViewHolder holder, int position) {
         TransactionCard transactionCard = transactionCardArrayList.get(position);
 
-
         long datentime = transactionCard.Timestamp.getSeconds();
 
         Date timeD = new Date(datentime * 1000);
@@ -48,23 +66,70 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.time.setText(showTime);
 
 
-
         if (transactionCard.GivenOrTaken.matches("Given")) {
             holder.amountGiven.setText(transactionCard.Amount);
         } else {
             holder.amountTaken.setText(transactionCard.Amount);
         }
         holder.with.setText(transactionCard.With);
-        holder.tag.setText(transactionCard.Tag);
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(holder.with.getContext());
+                builder.setTitle("Are you sure?");
+                builder.setMessage("Deletion Can't be Undo!!!");
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String userEmail = user.getEmail();
+                        dbroot.collection("Users").document(userEmail).collection("Transactions").document(transactionCard.getDocID()).delete();
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                builder.show();
+            }
+        });
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (holder.edit_delete_toggle.getVisibility() == GONE) {
+                    holder.edit_delete_toggle.setVisibility(VISIBLE);
+                } else {
+                    holder.edit_delete_toggle.setVisibility(GONE);
+                }
+            }
+        });
+
+
     }
+
 
     @Override
     public int getItemCount() {
         return transactionCardArrayList.size();
     }
 
+
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
-        TextView amountGiven,amountTaken, with, tag, date, time;
+        TextView amountGiven, amountTaken, with, tag, date, time;
+        TextView TP_with, TP_amount, TP_description, TP_categories, TP_tags, TP_date, TP_time, TP_dateAndTimePicker, TP_cancel, TP_done;
+        LinearLayout edit_delete_toggle;
+        Button delete, edit;
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +140,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             tag = itemView.findViewById(R.id.Show_tag);
             date = itemView.findViewById(R.id.TC_Date);
             time = itemView.findViewById(R.id.TC_Time);
+            edit_delete_toggle = itemView.findViewById(R.id.edit_delete_toggle);
+            edit = itemView.findViewById(R.id.Edit);
+            delete = itemView.findViewById(R.id.Delete);
+
+
+            TP_amount = itemView.findViewById(R.id.TP_amount);
+
 
         }
     }

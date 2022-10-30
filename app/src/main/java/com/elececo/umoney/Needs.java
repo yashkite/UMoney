@@ -47,12 +47,14 @@ public class Needs extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+
         db = FirebaseFirestore.getInstance();
         transactionCardArrayList = new ArrayList<TransactionCard>();
 
         transactionAdapter = new TransactionAdapter(getActivity(), transactionCardArrayList);
         recyclerView.setAdapter(transactionAdapter);
         EventChangeListener();
+
 
         needsGivenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -77,14 +79,11 @@ public class Needs extends Fragment {
 
     private void EventChangeListener() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String userEmail = user.getEmail();
         db.collection("Users")
-                .document(userEmail)
-//                .collection("TransactionList")
-                .collection("Needs")
-//                .collection("Tags")
-//                .document("Food")
-//                .collection("Given")
+                .document(user.getEmail())
+                .collection("Transactions")
+                .whereEqualTo("Category", "Needs")
+
                 .orderBy("Timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override

@@ -78,11 +78,9 @@ public class Wants extends Fragment {
         String userEmail = user.getEmail();
         db.collection("Users")
                 .document(userEmail)
-//                .collection("TransactionList")
-                .collection("Wants")
-//                .collection("Tags")
-//                .document("Food")
-//                .collection("Given")
+                .collection("Transactions")
+                .whereEqualTo("Category", "Wants")
+
                 .orderBy("Timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override

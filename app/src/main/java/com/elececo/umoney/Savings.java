@@ -79,11 +79,10 @@ public class Savings extends Fragment {
         String userEmail = user.getEmail();
         db.collection("Users")
                 .document(userEmail)
-//                .collection("TransactionList")
-                .collection("Savings")
-//                .collection("Tags")
-//                .document("Food")
-//                .collection("Given")
+
+                .collection("Transactions")
+                .whereEqualTo("Category", "Savings")
+
                 .orderBy("Timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
