@@ -15,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,11 +29,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 public class Wants extends Fragment {
-    Context context;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     RecyclerView recyclerView;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    CollectionReference collectionReference = db.collection("Users").document(user.getEmail()).collection("Transactions");
     ArrayList<TransactionCard> transactionCardArrayList;
     TransactionAdapter transactionAdapter;
-    FirebaseFirestore db;
     public Wants(){
         // require a empty public constructor
     }
@@ -43,15 +47,7 @@ public class Wants extends Fragment {
         Button wantsGivenButton = (Button) rootView.findViewById(R.id.wantsGivenButton);
         Button wantsTakenButton = (Button) rootView.findViewById(R.id.wantsTakenButton);
         recyclerView = rootView.findViewById(R.id.wantsRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        db = FirebaseFirestore.getInstance();
-        transactionCardArrayList = new ArrayList<TransactionCard>();
-
-        transactionAdapter = new TransactionAdapter(getActivity(), transactionCardArrayList);
-        recyclerView.setAdapter(transactionAdapter);
-        EventChangeListener();
+        setUpRecyclerView();
 
         wantsGivenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -72,6 +68,29 @@ public class Wants extends Fragment {
         });
         return rootView;
 
+    }
+
+    private void setUpRecyclerView() {
+        Query query =  collectionReference.whereEqualTo("Category", "Wants")
+                .orderBy("Timestamp", Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<TransactionCard> options = new FirestoreRecyclerOptions.Builder<TransactionCard>().setQuery(query, TransactionCard.class).build();
+        transactionAdapter = new TransactionAdapter(options);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(transactionAdapter);
+
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        transactionAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        transactionAdapter.stopListening();
     }
     private void EventChangeListener() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

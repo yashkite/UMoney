@@ -6,54 +6,54 @@ import static android.view.View.VISIBLE;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.orhanobut.dialogplus.DialogPlus;
-import com.orhanobut.dialogplus.ViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
-
-    Context context;
+public class TransactionAdapter extends FirestoreRecyclerAdapter<TransactionCard ,TransactionAdapter.TransactionViewHolder> {
     ArrayList<TransactionCard> transactionCardArrayList;
+    Context context;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore dbroot = FirebaseFirestore.getInstance();
 
-
-    public TransactionAdapter(Context context, ArrayList<TransactionCard> transactionArrayList) {
-        this.context = context;
-        this.transactionCardArrayList = transactionArrayList;
+    /**
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
+     * FirestoreRecyclerOptions} for configuration options.
+     *
+     * @param options
+     */
+    public TransactionAdapter(@NonNull FirestoreRecyclerOptions<TransactionCard> options) {
+        super(options);
     }
+
 
     @NonNull
     @Override
     public TransactionAdapter.TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.activity_transaction_card, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_transaction_card, parent, false);
         return new TransactionViewHolder(v);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull TransactionAdapter.TransactionViewHolder holder, int position) {
-        TransactionCard transactionCard = transactionCardArrayList.get(position);
 
+
+    @Override
+    protected void onBindViewHolder(@NonNull TransactionViewHolder holder, int position, @NonNull TransactionCard transactionCard) {
         long datentime = transactionCard.Timestamp.getSeconds();
 
         Date timeD = new Date(datentime * 1000);
@@ -115,14 +115,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             }
         });
 
-
     }
 
 
-    @Override
-    public int getItemCount() {
-        return transactionCardArrayList.size();
-    }
 
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {

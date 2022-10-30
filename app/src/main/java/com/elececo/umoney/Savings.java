@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,11 +28,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 public class Savings extends Fragment {
-    Context context;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     RecyclerView recyclerView;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    CollectionReference collectionReference = db.collection("Users").document(user.getEmail()).collection("Transactions");
     ArrayList<TransactionCard> transactionCardArrayList;
     TransactionAdapter transactionAdapter;
-    FirebaseFirestore db;
     public Savings(){
         // require a empty public constructor
     }
@@ -41,16 +45,8 @@ public class Savings extends Fragment {
         Button savingsGivenButton = (Button) rootView.findViewById(R.id.savingsGivenButton);
         Button savingsTakenButton = (Button) rootView.findViewById(R.id.savingsTakenButton);
         recyclerView = rootView.findViewById(R.id.savingsRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        db = FirebaseFirestore.getInstance();
-        transactionCardArrayList = new ArrayList<TransactionCard>();
-
-        transactionAdapter = new TransactionAdapter(getActivity(), transactionCardArrayList);
-        recyclerView.setAdapter(transactionAdapter);
-        EventChangeListener();
-
+        setUpRecyclerView();
 
 
 
@@ -74,31 +70,30 @@ public class Savings extends Fragment {
         return rootView;
 
     }
-    private void EventChangeListener() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String userEmail = user.getEmail();
-        db.collection("Users")
-                .document(userEmail)
+    private void setUpRecyclerView() {
+        Query query = (Query) collectionReference.whereEqualTo("Category", "Savings")
+                .orderBy("Timestamp", Query.Direction.DESCENDING);
 
-                .collection("Transactions")
-                .whereEqualTo("Category", "Savings")
 
-                .orderBy("Timestamp", Query.Direction.DESCENDING)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Log.e("Firestore error", error.getMessage());
-                            return;
-                        }
-                        for (DocumentChange dc : value.getDocumentChanges()) {
-                            if (dc.getType() == DocumentChange.Type.ADDED) {
-                                transactionCardArrayList.add(dc.getDocument().toObject(TransactionCard.class));
-                            }
-                            transactionAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
+        FirestoreRecyclerOptions<TransactionCard> options = new FirestoreRecyclerOptions.Builder<TransactionCard>().setQuery(query, TransactionCard.class).build();
+        transactionAdapter = new TransactionAdapter(options);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(transactionAdapter);
+
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        transactionAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        transactionAdapter.stopListening();
+    }
+
+
 
 }

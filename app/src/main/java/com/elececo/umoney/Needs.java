@@ -1,6 +1,5 @@
 package com.elececo.umoney;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,8 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,11 +28,13 @@ import java.util.ArrayList;
 
 
 public class Needs extends Fragment {
-    Context context;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     RecyclerView recyclerView;
-    ArrayList<TransactionCard> transactionCardArrayList;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    CollectionReference collectionReference = db.collection("Users").document(user.getEmail()).collection("Transactions");
     TransactionAdapter transactionAdapter;
-    FirebaseFirestore db;
+
 
     public Needs() {
         // require a empty public constructor
@@ -44,17 +47,8 @@ public class Needs extends Fragment {
         Button needsGivenButton = (Button) rootView.findViewById(R.id.needsGivenButton);
         Button needsTakenButton = (Button) rootView.findViewById(R.id.needsTakenButton);
         recyclerView = rootView.findViewById(R.id.needsRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
-        db = FirebaseFirestore.getInstance();
-        transactionCardArrayList = new ArrayList<TransactionCard>();
-
-        transactionAdapter = new TransactionAdapter(getActivity(), transactionCardArrayList);
-        recyclerView.setAdapter(transactionAdapter);
-        EventChangeListener();
-
+        setUpRecyclerView();
 
         needsGivenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -77,30 +71,32 @@ public class Needs extends Fragment {
         return rootView;
     }
 
-    private void EventChangeListener() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        db.collection("Users")
-                .document(user.getEmail())
-                .collection("Transactions")
-                .whereEqualTo("Category", "Needs")
+    private void setUpRecyclerView() {
+        Query query = collectionReference.whereEqualTo("Category", "Needs")
+                .orderBy("Timestamp", Query.Direction.DESCENDING);
 
-                .orderBy("Timestamp", Query.Direction.DESCENDING)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Log.e("Firestore error", error.getMessage());
-                            return;
-                        }
-                        for (DocumentChange dc : value.getDocumentChanges()) {
-                            if (dc.getType() == DocumentChange.Type.ADDED) {
-                                transactionCardArrayList.add(dc.getDocument().toObject(TransactionCard.class));
-                            }
-                            transactionAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
+
+        FirestoreRecyclerOptions<TransactionCard> options = new FirestoreRecyclerOptions.Builder<TransactionCard>().setQuery(query, TransactionCard.class).build();
+        transactionAdapter = new TransactionAdapter(options);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(transactionAdapter);
+
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        transactionAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        transactionAdapter.stopListening();
+    }
+
+
 
 
 }
