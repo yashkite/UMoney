@@ -39,7 +39,7 @@ YouTube will guide you to properly install them
 If you cleared all the prerequisites then you can start contributing to this project by following these steps.
 
 1. Fork the repository
-   - The first thing that you have to do is Fork the repository. By doing this you will create a copy of the UMoney repository to your local account of GitHub. When you are contributing to this project, Your changes will not affect the original repository. when you are done with your changes you can create a pull request. All requests will notify the original repository that new changes are incoming.  if the developers approve the code then it will be merged into a main repository.
+   - In order to contribute to the UMoney project, you first need to fork the repository. This will create a copy of the UMoney repository in your local GitHub account. Any changes you make will not affect the original repository. Once you are finished making your changes, you can create a pull request. This will notify the original repository that there are new changes incoming. If the developers approve the code, it will be merged into the UMoney repository.
 
 1. Make yourself a developer on Github
    - Click on [Generate token](https://github.com/settings/tokens "Generate token")

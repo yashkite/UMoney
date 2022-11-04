@@ -6,6 +6,7 @@ import static android.view.View.VISIBLE;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,6 +100,12 @@ public class TransactionAdapter extends FirestoreRecyclerAdapter<TransactionCard
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Intent myIntent = new Intent(view.getContext(), TransactionPage.class);
+                myIntent.putExtra("DocId", transactionCard.getDocID()); //Optional parameters
+                view.getContext().startActivity(myIntent);
+
+
 
 
             }

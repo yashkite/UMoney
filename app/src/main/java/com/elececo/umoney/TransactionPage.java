@@ -50,6 +50,8 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
     private String selectedCategory, selectedTag;
     private ArrayAdapter<CharSequence> CategoryAdapter, TagAdapter;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +87,9 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
 
 //      Grab the value send by intent from fragment to use while making path
         Intent i = getIntent();
+        Intent docID = getIntent();
+        String docId = "Empty";
+        docId = docID.getStringExtra("DocId");
         String GivenOrTaken = i.getStringExtra("WhichButton");
 
 
@@ -95,6 +100,7 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
 
 
         done = findViewById(R.id.TP_done);
+        String finalDocId = docId;
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,8 +108,8 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
             }
 
             private void insertdata() {
-                String randomID = FirebaseFirestore.getInstance().collection("Transaction").document().getId();
 
+                String randomID = FirebaseFirestore.getInstance().collection("Transaction").document().getId();
                 String datentime = myYear + "-" + myMonth + "-" + myday + "T" + myHour + ":" + myMinute + ":00Z";
 
                 Map<String, Object> i = new HashMap<>();
@@ -117,10 +123,8 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
                 i.put("Timestamp", getDateFromString(datentime));
 
 
-
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String userEmail = user.getEmail();
-//              path = "/Users/" + userEmail + selectedCategory + "/Tags/" + selectedTag + "/" + GivenOrTaken;
 
 //              checking the value is not empty before making entry for required values only
                 String checkwith = with.getText().toString();
@@ -138,6 +142,7 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
 
             }
         });
+
 
 //      cancel button will finish the activity and comeback to the previous activity
         cancel = findViewById(R.id.TP_cancel);
@@ -159,7 +164,7 @@ public class TransactionPage extends AppCompatActivity implements DatePickerDial
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long Id) {
                 Tags = findViewById(R.id.TP_tags);
-                //      getting from which category its comes from and saving it inside selectedCategory veriable
+                //      getting from which category its comes from and saving it inside selectedCategory variable
                 selectedCategory = Category.getSelectedItem().toString();
                 int parentId = parent.getId();
 
