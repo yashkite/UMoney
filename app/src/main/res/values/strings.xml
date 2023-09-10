@@ -3,6 +3,7 @@
     <string name="given">Given</string>
     <string name="taken">Taken</string>
     <string name="needs">Needs</string>
+    <string name="profile_picture">default profile pic</string>
     <string-array name="TransactionCategoryList">
         <item>Needs</item>
         <item>Wants</item>
@@ -50,5 +51,10 @@
 
 
     </string-array>
+
+        <string name="open_drawer">Open Drawer</string>
+        <string name="close_drawer">Close Drawer</string>
+        <!-- Other strings -->
+
 
 </resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/nav_header.xml -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:orientation="vertical"
+    android:gravity="bottom"
+    android:background="@color/primaryColor"
+    android:padding="16dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <!-- Profile Picture -->
+    <ImageView
+        android:id="@+id/nav_header_profile_picture"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/default_profile_24"
+        android:contentDescription="@string/profile_picture" />
+
+    <!-- Name -->
+    <TextView
+        android:id="@+id/nav_header_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Name"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp" />
+
+    <!-- Gmail ID -->
+    <TextView
+        android:id="@+id/nav_header_gmail_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="yourname@gmail.com"
+        android:textSize="14sp"
+        android:textColor="@android:color/white" />
+</LinearLayout>
