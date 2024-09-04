@@ -1,3 +1,60 @@
 <resources>
     <string name="app_name">UMoney</string>
+    <string name="given">Given</string>
+    <string name="taken">Taken</string>
+    <string name="needs">Needs</string>
+    <string name="profile_picture">default profile pic</string>
+    <string-array name="TransactionCategoryList">
+        <item>Needs</item>
+        <item>Wants</item>
+        <item>Savings</item>
+        <item>Income</item>
+        <item>Loan</item>
+        <item>Uncategorised</item>
+
+    </string-array>
+    <string-array name="Needs">
+        <item>Food</item>
+        <item>Glosary</item>
+        <item>Rent</item>
+        <item>EMI</item>
+        <item>Uncategorised</item>
+    </string-array>
+    <string-array name="Wants">
+        <item>Travel</item>
+        <item>Entertainment</item>
+        <item>Designer clothing</item>
+        <item>Gym memberships</item>
+        <item>Dine Out</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="Savings">
+        <item>Savings Accounts</item>
+        <item>Stocks</item>
+        <item>Fixed Deposit/Certificate of Deposit</item>
+        <item>Bonds</item>
+        <item>NPS</item>
+        <item>Real estate</item>
+        <item>EPF</item>
+        <item>PPF</item>
+    </string-array>
+    <string-array name="Income">
+        <item>Job</item>
+        <item>Rent</item>
+        <item>Freelance Work</item>
+        <item>Bonds</item>
+        <item>NPS</item>
+        <item>Real estate</item>
+        <item>EPF</item>
+        <item>PPF</item>
+
+
+    </string-array>
+
+        <string name="open_drawer">Open Drawer</string>
+        <string name="close_drawer">Close Drawer</string>
+        <!-- Other strings -->
+
+
 </resources>

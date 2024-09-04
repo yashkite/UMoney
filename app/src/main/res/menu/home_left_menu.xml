@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_item_home"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/nav_item_account"
+            android:title="Account" />
+
+        <item
+            android:id="@+id/nav_item_profile"
+            android:title="Profile" />
+    </group>
+
+    <!-- Separate section for user-related actions -->
+    <group android:id="@+id/group_user_actions">
+        <item
+            android:id="@+id/nav_item_settings"
+            android:title="Settings" />
+
+        <item
+            android:id="@+id/nav_item_logout"
+            android:title="Logout" />
+    </group>
+
+    <!-- Separate section for information and help -->
+    <group android:id="@+id/group_information">
+        <item
+            android:id="@+id/nav_item_about_us"
+            android:title="About Us" />
+
+        <item
+            android:id="@+id/nav_item_contact_us"
+            android:title="Contact Us" />
+
+        <item
+            android:id="@+id/nav_item_faq"
+            android:title="FAQ (Frequently Asked Questions)" />
+    </group>
+</menu>
