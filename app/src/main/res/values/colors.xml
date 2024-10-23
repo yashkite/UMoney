@@ -11,4 +11,18 @@
     <color name="secondaryColor">#3498DB</color>
     <color name="backgroundColor">#FFFFFF</color>
 
+    <!-- Light theme colors -->
+    <color name="primaryColorLight">#0052CC</color>
+    <color name="secondaryColorLight">#3498DB</color>
+    <color name="backgroundColorLight">#FFFFFF</color>
+
+    <!-- Dark theme colors -->
+    <color name="primaryColorDark">#002984</color>
+    <color name="secondaryColorDark">#2980B9</color>
+    <color name="backgroundColorDark">#121212</color>
+
+    <color name="positive_balance">#4CAF50</color>
+    <color name="negative_balance">#E53935</color>
+
+
 </resources>

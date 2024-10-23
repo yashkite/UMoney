@@ -40,7 +40,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0'
 
     // Firebase (versions managed by BOM)
-    implementation platform('com.google.firebase:firebase-bom:33.2.0')
+    implementation platform('com.google.firebase:firebase-bom:33.5.1')
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
 
@@ -52,8 +52,8 @@ dependencies {
     implementation 'com.orhanobut:dialogplus:1.11@aar'
 
     // Fragments
-    implementation "androidx.fragment:fragment:1.8.2"
-    implementation "androidx.fragment:fragment-ktx:1.8.2"
+    implementation "androidx.fragment:fragment:1.8.4"
+    implementation "androidx.fragment:fragment-ktx:1.8.4"
 
     // Testing
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

@@ -2,138 +2,105 @@ package com.elececo.umoney;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
-    GoogleSignInClient mGoogleSignInClient;
-    BottomNavigationView bottomNavigationView;
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    Dashboard Dashboard = new Dashboard();
-    Needs Needs = new Needs();
-    Wants Wants = new Wants();
-    Savings Savings = new Savings();
-    private FirebaseAuth mAuth;
+    private BottomNavigationView bottomNavigationView;
+    private View transactionButtonsLayout;
+    private Button givenButton, takenButton;
+    private String currentFragmentTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-
-
-        // Set up the ActionBar for navigation drawer toggle
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.baseline_menu_24); // Set your navigation icon
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        // Create an instance of ActionBarDrawerToggle and tie it to the DrawerLayout
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this,                  // your activity
-                drawerLayout,          // the DrawerLayout to link
-                R.string.open_drawer,  // "open drawer" description
-                R.string.close_drawer  // "close drawer" description
-        );
-
-        // Set the ActionBarDrawerToggle as the DrawerListener
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-
-        // Sync the toggle state. This ensures the correct icon is shown when the drawer is open or closed.
-        actionBarDrawerToggle.syncState();
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        mAuth = FirebaseAuth.getInstance();
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.Dashboard);
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // Toggle the drawer when the navigation icon is clicked
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void msignOut() {
-
-        mAuth.signOut();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-
-
-    }
-
-    private void updateUI(FirebaseUser currentUser) {
-        if (currentUser == null) {
-            startActivity(new Intent(this, Google_Login.class));
-            finish();
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        transactionButtonsLayout = findViewById(R.id.transactionButtonsLayout);
+        
+        if (transactionButtonsLayout == null) {
+            Log.e("MainActivity", "transactionButtonsLayout is null");
         } else {
-            Toast.makeText(this, "User not getting signout", Toast.LENGTH_SHORT).show();
+            givenButton = transactionButtonsLayout.findViewById(R.id.givenButton);
+            takenButton = transactionButtonsLayout.findViewById(R.id.takenButton);
+            
+            if (givenButton == null || takenButton == null) {
+                Log.e("MainActivity", "Button views are null");
+            } else {
+                Log.d("MainActivity", "All views found successfully");
+            }
+        }
 
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.Dashboard) {
+                replaceFragment(new DashboardFragment(), "Dashboard");
+            } else if (itemId == R.id.Needs) {
+                replaceFragment(new NeedsFragment(), "Needs");
+            } else if (itemId == R.id.Wants) {
+                replaceFragment(new WantsFragment(), "Wants");
+            } else if (itemId == R.id.Savings) {
+                replaceFragment(new SavingsFragment(), "Savings");
+            }
+            return true;
+        });
+
+        givenButton.setOnClickListener(v -> handleTransactionClick("Given"));
+        takenButton.setOnClickListener(v -> handleTransactionClick("Taken"));
+
+        // Set default fragment
+        replaceFragment(new DashboardFragment(), "Dashboard");
+
+        // Force visibility of transaction buttons
+        if (transactionButtonsLayout != null) {
+            transactionButtonsLayout.setVisibility(View.VISIBLE);
+            Log.d("MainActivity", "Forcing transaction buttons visibility to VISIBLE");
+        }
+
+        updateTransactionButtonsVisibility();
+    }
+
+    private void replaceFragment(Fragment fragment, String tag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout, fragment);
+        fragmentTransaction.commit();
+
+        currentFragmentTag = tag;
+        updateTransactionButtonsVisibility();
+    }
+
+    private void updateTransactionButtonsVisibility() {
+        if (transactionButtonsLayout != null) {
+            if (currentFragmentTag.equals("Needs") || currentFragmentTag.equals("Wants") || currentFragmentTag.equals("Savings")) {
+                transactionButtonsLayout.setVisibility(View.VISIBLE);
+                Log.d("MainActivity", "Setting transaction buttons to VISIBLE for " + currentFragmentTag);
+            } else {
+                transactionButtonsLayout.setVisibility(View.GONE);
+                Log.d("MainActivity", "Setting transaction buttons to GONE for " + currentFragmentTag);
+            }
+            Log.d("MainActivity", "Current visibility: " + (transactionButtonsLayout.getVisibility() == View.VISIBLE ? "VISIBLE" : "GONE"));
+        } else {
+            Log.e("MainActivity", "transactionButtonsLayout is null");
         }
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.Dashboard:
-                getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, Dashboard).commit();
-                return true;
-
-            case R.id.Needs:
-                getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, Needs).commit();
-                return true;
-
-            case R.id.Wants:
-                getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, Wants).commit();
-                return true;
-
-            case R.id.Savings:
-                getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, Savings).commit();
-                return true;
-        }
-        return false;
+    private void handleTransactionClick(String transactionType) {
+        String category = currentFragmentTag; // This will be "Needs", "Wants", or "Savings"
+        
+        Intent intent = new Intent(this, AddTransactionActivity.class);
+        intent.putExtra("category", category);
+        intent.putExtra("transactionType", transactionType);
+        startActivity(intent);
     }
-
-
 }
