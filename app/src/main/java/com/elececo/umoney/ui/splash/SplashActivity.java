@@ -10,7 +10,7 @@ import com.elececo.umoney.ui.auth.GoogleLoginActivity;
 import com.elececo.umoney.ui.auth.UserSetupActivity;
 import com.elececo.umoney.ui.dashboard.DashboardActivity;
 import com.elececo.umoney.ui.auth.viewmodel.AuthViewModel;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashActivity extends AppCompatActivity {
     private static final long SPLASH_DELAY = 2000; // 2 seconds
@@ -28,7 +28,7 @@ public class SplashActivity extends AppCompatActivity {
     }
     
     private void checkAuthStatus() {
-        GoogleSignInAccount currentUser = authViewModel.getCurrentUser();
+        FirebaseUser currentUser = authViewModel.getCurrentUser();
         if (currentUser == null) {
             startLoginActivity();
         } else {

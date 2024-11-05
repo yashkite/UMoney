@@ -27,10 +27,10 @@ public class SavingsFragment extends BaseFragment<SavingsViewModel> {
         TextView cardTitle = view.findViewById(R.id.card_title);
         cardTitle.setText("Savings Summary");
         
-        // Set FAB icon for deducting funds
+        // Setup FAB
         FloatingActionButton fab = view.findViewById(R.id.fab_action);
-        fab.setImageResource(R.drawable.ic_remove);
-        fab.setOnClickListener(v -> showDeductDialog());
+        fab.setImageResource(R.drawable.ic_add);
+        fab.setOnClickListener(v -> showAddTransactionDialog());
     }
     
     @Override
@@ -43,7 +43,7 @@ public class SavingsFragment extends BaseFragment<SavingsViewModel> {
         // TODO: Setup observers for savings data
     }
     
-    private void showDeductDialog() {
-        // TODO: Implement deduct funds dialog according to CoreLogic.md
+    private void showAddTransactionDialog() {
+        // TODO: Implement add transaction dialog according to CoreLogic.md
     }
 }

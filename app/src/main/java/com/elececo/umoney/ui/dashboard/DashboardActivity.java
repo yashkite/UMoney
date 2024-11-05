@@ -19,6 +19,8 @@ import com.elececo.umoney.ui.needs.NeedsFragment;
 import com.elececo.umoney.ui.wants.WantsFragment;
 import com.elececo.umoney.ui.savings.SavingsFragment;
 import com.elececo.umoney.ui.income.IncomeFragment;
+import com.elececo.umoney.ui.profile.ProfileActivity;
+import com.elececo.umoney.ui.about.AboutActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -106,13 +108,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         int itemId = item.getItemId();
         
         if (itemId == R.id.nav_profile) {
-            // TODO: Navigate to Profile
+            startActivity(new Intent(this, ProfileActivity.class));
+        } else if (itemId == R.id.nav_about) {
+            startActivity(new Intent(this, AboutActivity.class));
         } else if (itemId == R.id.nav_settings) {
             // TODO: Navigate to Settings
         } else if (itemId == R.id.nav_categories) {
             // TODO: Navigate to Categories
-        } else if (itemId == R.id.nav_about) {
-            // TODO: Navigate to About
         } else if (itemId == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, GoogleLoginActivity.class));

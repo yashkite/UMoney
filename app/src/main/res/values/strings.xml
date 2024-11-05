@@ -59,6 +59,7 @@
         <string name="logout_title">Logout</string>
         <string name="logout_message">Are you sure you want to logout?</string>
         <string name="logout_confirm">Logout</string>
+        <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
         <!-- Other strings -->
 
 
