@@ -52,8 +52,13 @@
 
     </string-array>
 
-        <string name="open_drawer">Open Drawer</string>
-        <string name="close_drawer">Close Drawer</string>
+        <string name="navigation_drawer_open">Open navigation drawer</string>
+        <string name="navigation_drawer_close">Close navigation drawer</string>
+        <string name="about_title">About UMoney</string>
+        <string name="about_message">UMoney helps you track and manage your finances by categorizing transactions into needs, wants, and savings.</string>
+        <string name="logout_title">Logout</string>
+        <string name="logout_message">Are you sure you want to logout?</string>
+        <string name="logout_confirm">Logout</string>
         <!-- Other strings -->
 
 

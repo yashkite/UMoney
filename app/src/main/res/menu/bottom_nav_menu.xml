@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/dashboard"
+        android:title="Dashboard" />
+    
+    <item
+        android:id="@+id/navigation_needs"
+        android:icon="@drawable/needs"
+        android:title="Needs" />
+    
+    <item
+        android:id="@+id/navigation_wants"
+        android:icon="@drawable/wants"
+        android:title="Wants" />
+    
+    <item
+        android:id="@+id/navigation_savings"
+        android:icon="@drawable/savings"
+        android:title="Savings" />
+    
+    <item
+        android:id="@+id/navigation_income"
+        android:icon="@drawable/income"
+        android:title="Income" />
+</menu> 

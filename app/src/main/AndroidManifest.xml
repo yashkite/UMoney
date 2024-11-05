@@ -9,25 +9,25 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/umoneylogo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight">
-
+        android:theme="@style/Theme.UMoney">
+        
+   
+        
         <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.DayNight" />
-
-        <activity
-            android:name=".Google_Login"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.DayNight">
+            android:name=".ui.splash.SplashActivity"
+            android:theme="@style/Theme.UMoney.Splash"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".AddTransactionActivity" />
+        
+        <activity android:name=".ui.auth.GoogleLoginActivity" />
+        <activity android:name=".ui.auth.UserSetupActivity" />
+        <activity 
+            android:name=".ui.dashboard.DashboardActivity"
+            android:theme="@style/Theme.UMoney.Dashboard" />
     </application>
 
 </manifest>

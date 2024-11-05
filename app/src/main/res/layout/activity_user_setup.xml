@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/monthly_income_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Monthly Income"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/employment_type_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Employment Type"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/continue_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:layout_marginTop="24dp"/>
+
+</LinearLayout> 

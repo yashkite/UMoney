@@ -19,7 +19,7 @@ This project is based on money management for anyone who likes the **20-30-50 ru
 
 
 ### Built With
-- Java / Kotlin
+- Java
 - XML
 - Python
 
