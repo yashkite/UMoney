@@ -1,10 +1,10 @@
 <resources>
     <!-- Base application theme -->
-    <style name="Theme.UMoney" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.UMoney" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
-        <item name="colorOnPrimary">@color/background_color</item>
+        <item name="colorOnPrimary">@color/white</item>
         
         <!-- Secondary brand color -->
         <item name="colorSecondary">@color/secondary</item>
@@ -14,9 +14,26 @@
         <!-- Status bar color -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         
-        <!-- Background & Text colors -->
-        <item name="android:windowBackground">@color/background_color</item>
-        <item name="android:textColor">@color/text_color</item>
+        <!-- Text Input Styles -->
+        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
+        
+        <!-- Material Components styles -->
+        <item name="materialButtonStyle">@style/Widget.MaterialComponents.Button</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+    </style>
+
+    <!-- Bottom Sheet Dialog Theme Overlay -->
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.App.BottomSheet</item>
+    </style>
+
+    <style name="Widget.App.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
     </style>
 
     <!-- Splash screen theme -->

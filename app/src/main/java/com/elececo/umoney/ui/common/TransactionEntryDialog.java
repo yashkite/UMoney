@@ -1,40 +1,45 @@
 package com.elececo.umoney.ui.common;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.elececo.umoney.R;
 import com.elececo.umoney.data.model.Transaction;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.timepicker.MaterialTimePicker;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class TransactionEntryDialog extends Dialog {
+public class TransactionEntryDialog extends BottomSheetDialog {
     private static final int PICK_FILE_REQUEST = 1;
     private final TransactionEntryListener listener;
     private final String type;
+    private TextInputLayout amountLayout;
     private TextInputEditText amountInput;
+    private TextInputLayout dateTimeLayout;
     private TextInputEditText dateTimeInput;
+    private TextInputLayout recipientLayout;
     private AutoCompleteTextView recipientInput;
+    private TextInputLayout categoryLayout;
     private AutoCompleteTextView categoryInput;
+    private TextInputLayout notesLayout;
     private TextInputEditText notesInput;
-    private TextView attachmentName;
+    private MaterialButton attachmentButton;
     private Uri attachmentUri;
     private Calendar calendar;
     private SimpleDateFormat dateTimeFormatter;
@@ -50,14 +55,20 @@ public class TransactionEntryDialog extends Dialog {
         this.type = type;
         this.listener = listener;
         this.calendar = Calendar.getInstance();
-        this.dateTimeFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        this.dateTimeFormatter = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_transaction_entry);
-        setTitle("Add " + type + " Transaction");
+        
+        // Make dialog full height
+        Window window = getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, 
+                           WindowManager.LayoutParams.WRAP_CONTENT);
+        }
 
         setupViews();
         setupListeners();
@@ -65,14 +76,20 @@ public class TransactionEntryDialog extends Dialog {
     }
 
     private void setupViews() {
+        // Initialize views with Material Design components
+        amountLayout = findViewById(R.id.amount_layout);
         amountInput = findViewById(R.id.amount_input);
+        dateTimeLayout = findViewById(R.id.datetime_layout);
         dateTimeInput = findViewById(R.id.datetime_input);
+        recipientLayout = findViewById(R.id.recipient_layout);
         recipientInput = findViewById(R.id.recipient_input);
+        categoryLayout = findViewById(R.id.category_layout);
         categoryInput = findViewById(R.id.category_input);
+        notesLayout = findViewById(R.id.notes_layout);
         notesInput = findViewById(R.id.notes_input);
-        attachmentName = findViewById(R.id.attachment_name);
+        attachmentButton = findViewById(R.id.attachment_button);
 
-        // Set up category adapter
+        // Set up category adapter with Material styling
         String[] categories = CATEGORIES.get(type);
         if (categories != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -82,33 +99,50 @@ public class TransactionEntryDialog extends Dialog {
             );
             categoryInput.setAdapter(adapter);
         }
+
+        // Set hints based on transaction type
+        amountLayout.setHint(type.equals("INCOME") ? "Income Amount" : "Expense Amount");
+        recipientLayout.setHint(type.equals("INCOME") ? "Received From" : "Paid To");
     }
 
     private void setupListeners() {
-        Button saveButton = findViewById(R.id.save_button);
-        Button cancelButton = findViewById(R.id.cancel_button);
-        Button attachmentButton = findViewById(R.id.attachment_button);
+        MaterialButton saveButton = findViewById(R.id.save_button);
+        MaterialButton cancelButton = findViewById(R.id.cancel_button);
 
-        dateTimeInput.setOnClickListener(v -> showDateTimePicker());
+        dateTimeInput.setOnClickListener(v -> showMaterialDateTimePicker());
         attachmentButton.setOnClickListener(v -> showFilePicker());
         saveButton.setOnClickListener(v -> saveTransaction());
         cancelButton.setOnClickListener(v -> dismiss());
     }
 
-    private void showDateTimePicker() {
-        new DatePickerDialog(getContext(), (view, year, month, dayOfMonth) -> {
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            
-            new TimePickerDialog(getContext(), (timeView, hourOfDay, minute) -> {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
-                updateDateTime();
-            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false).show();
-            
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 
-           calendar.get(Calendar.DAY_OF_MONTH)).show();
+    private void showMaterialDateTimePicker() {
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select date")
+            .setSelection(calendar.getTimeInMillis())
+            .build();
+
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            calendar.setTimeInMillis(selection);
+            showMaterialTimePicker();
+        });
+
+        datePicker.show(((androidx.fragment.app.FragmentActivity) getContext()).getSupportFragmentManager(), "DATE_PICKER");
+    }
+
+    private void showMaterialTimePicker() {
+        MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+            .setTitleText("Select time")
+            .setHour(calendar.get(Calendar.HOUR_OF_DAY))
+            .setMinute(calendar.get(Calendar.MINUTE))
+            .build();
+
+        timePicker.addOnPositiveButtonClickListener(v -> {
+            calendar.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
+            calendar.set(Calendar.MINUTE, timePicker.getMinute());
+            updateDateTime();
+        });
+
+        timePicker.show(((androidx.fragment.app.FragmentActivity) getContext()).getSupportFragmentManager(), "TIME_PICKER");
     }
 
     private void showFilePicker() {
@@ -125,8 +159,8 @@ public class TransactionEntryDialog extends Dialog {
         if (uri != null) {
             attachmentUri = uri;
             String fileName = uri.getLastPathSegment();
-            attachmentName.setText(fileName);
-            attachmentName.setVisibility(View.VISIBLE);
+            attachmentButton.setText(fileName);
+            attachmentButton.setVisibility(View.VISIBLE);
         }
     }
 

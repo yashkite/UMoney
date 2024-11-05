@@ -33,23 +33,33 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="In: ₹0"
-                android:textColor="@android:color/holo_green_dark" />
-
-            <TextView
-                android:id="@+id/out_amount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Out: ₹0"
-                android:textColor="@android:color/holo_red_dark" />
+                android:gravity="center"
+                android:textColor="@android:color/holo_green_dark"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/hold_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:text="Hold: ₹0"
-                android:textColor="@android:color/darker_gray" />
+                android:gravity="center"
+
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                 />
+
+            <TextView
+                android:id="@+id/out_amount"
+                android:layout_width="0dp"
+                android:gravity="center"
+
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Out: ₹0"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView> 

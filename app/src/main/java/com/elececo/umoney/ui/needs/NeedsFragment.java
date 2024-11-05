@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.elececo.umoney.R;
 import com.elececo.umoney.data.model.Transaction;
 import com.elececo.umoney.ui.base.BaseFragment;
+import com.elececo.umoney.ui.common.TransactionAdapter;
 import com.elececo.umoney.ui.common.TransactionEntryDialog;
 import com.elececo.umoney.ui.needs.viewmodel.NeedsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -61,8 +64,32 @@ public class NeedsFragment extends BaseFragment<NeedsViewModel> implements Trans
     
     @Override
     protected void setupObservers() {
+        RecyclerView transactionsList = requireView().findViewById(R.id.transactions_list);
+        TransactionAdapter adapter = new TransactionAdapter();
+        transactionsList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        transactionsList.setAdapter(adapter);
+
         viewModel.getTransactions().observe(getViewLifecycleOwner(), transactions -> {
-            // TODO: Update RecyclerView with transactions
+            adapter.setTransactions(transactions);
+            
+            // Update summary card
+            double inAmount = 0;
+            double outAmount = 0;
+            for (Transaction transaction : transactions) {
+                if (transaction.getAmount() > 0) {
+                    inAmount += transaction.getAmount();
+                } else {
+                    outAmount += Math.abs(transaction.getAmount());
+                }
+            }
+            
+            TextView inAmountView = requireView().findViewById(R.id.in_amount);
+            TextView outAmountView = requireView().findViewById(R.id.out_amount);
+            TextView holdAmountView = requireView().findViewById(R.id.hold_amount);
+            
+            inAmountView.setText(String.format("In: ₹%.2f", inAmount));
+            outAmountView.setText(String.format("Out: ₹%.2f", outAmount));
+            holdAmountView.setText(String.format("Hold: ₹%.2f", inAmount - outAmount));
         });
     }
     
