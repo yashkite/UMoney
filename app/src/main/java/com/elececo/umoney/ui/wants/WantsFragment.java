@@ -34,11 +34,11 @@ public class WantsFragment extends BaseFragment<WantsViewModel> implements Trans
         
         // Set card title
         TextView cardTitle = view.findViewById(R.id.card_title);
-        cardTitle.setText("Wants Summary");
+        cardTitle.setText("Wants Expenses");
         
         // Setup FAB
         FloatingActionButton fab = view.findViewById(R.id.fab_action);
-        fab.setImageResource(R.drawable.ic_add);
+        fab.setImageResource(R.drawable.ic_remove);
         fab.setOnClickListener(v -> showAddTransactionDialog());
     }
     
@@ -89,6 +89,8 @@ public class WantsFragment extends BaseFragment<WantsViewModel> implements Trans
     
     @Override
     public void onTransactionSaved(Transaction transaction) {
+        // Make amount negative since it's an expense
+        transaction.setAmount(-Math.abs(transaction.getAmount()));
         viewModel.saveTransaction(transaction);
     }
     

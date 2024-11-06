@@ -93,7 +93,7 @@ public class IncomeViewModel extends ViewModel {
         needsTransaction.setAmount(needsAmount);
         needsTransaction.setNotes("Auto-distributed from Income");
         needsTransaction.setCategory("NEEDS");
-        needsTransaction.setType("INCOME");
+        needsTransaction.setType("NEEDS");
         needsTransaction.setTimestamp(currentTime);
         needsTransaction.setParentTransactionId(parentTransactionId);
         needsTransaction.setUserId(userId);
@@ -102,7 +102,7 @@ public class IncomeViewModel extends ViewModel {
         wantsTransaction.setAmount(wantsAmount);
         wantsTransaction.setNotes("Auto-distributed from Income");
         wantsTransaction.setCategory("WANTS");
-        wantsTransaction.setType("INCOME");
+        wantsTransaction.setType("WANTS");
         wantsTransaction.setTimestamp(currentTime);
         wantsTransaction.setParentTransactionId(parentTransactionId);
         wantsTransaction.setUserId(userId);
@@ -111,7 +111,7 @@ public class IncomeViewModel extends ViewModel {
         savingsTransaction.setAmount(savingsAmount);
         savingsTransaction.setNotes("Auto-distributed from Income");
         savingsTransaction.setCategory("SAVINGS");
-        savingsTransaction.setType("INCOME");
+        savingsTransaction.setType("SAVINGS");
         savingsTransaction.setTimestamp(currentTime);
         savingsTransaction.setParentTransactionId(parentTransactionId);
         savingsTransaction.setUserId(userId);
