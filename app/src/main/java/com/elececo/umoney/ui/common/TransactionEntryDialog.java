@@ -45,9 +45,10 @@ public class TransactionEntryDialog extends BottomSheetDialog {
     private SimpleDateFormat dateTimeFormatter;
 
     private static final Map<String, String[]> CATEGORIES = new HashMap<String, String[]>() {{
-        put("NEEDS", new String[]{"Rent", "Groceries", "Utilities", "Transportation"});
-        put("WANTS", new String[]{"Entertainment", "Shopping", "Dining", "Travel"});
-        put("SAVINGS", new String[]{"Emergency Fund", "Investment", "Goals", "Retirement"});
+        put("NEEDS", new String[]{"Food", "Transportation", "Housing", "Utilities", "Healthcare", "Education"});
+        put("WANTS", new String[]{"Entertainment", "Shopping", "Dining", "Travel", "Hobbies", "Gadgets"});
+        put("SAVINGS", new String[]{"Emergency Fund", "Retirement", "Investment", "Goals", "Insurance"});
+        put("INCOME", new String[]{"Salary", "Freelance", "Business", "Investment", "Rental", "Other"});
     }};
 
     public TransactionEntryDialog(@NonNull Context context, String type, TransactionEntryListener listener) {

@@ -72,7 +72,7 @@ public class IncomeFragment extends BaseFragment<IncomeViewModel> implements Tra
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        FloatingActionButton fab = view.findViewById(R.id.fab_action);
+        FloatingActionButton fab = view.findViewById(R.id.fab_add_income);
         fab.setImageResource(R.drawable.ic_add);
         fab.setOnClickListener(v -> showAddTransactionDialog());
     }

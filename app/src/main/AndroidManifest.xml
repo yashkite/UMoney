@@ -28,11 +28,10 @@
         <activity 
             android:name=".ui.dashboard.DashboardActivity"
             android:theme="@style/Theme.UMoney.Dashboard" />
-        <activity android:name=".ui.profile.ProfileActivity" />
+        <activity android:name=".ui.profile.ProfileActivity" android:theme="@style/Theme.UMoney.NoActionBar" />
         <activity
             android:name=".ui.about.AboutActivity"
-            android:exported="false"
-            android:theme="@style/Theme.UMoney"/>
+            android:theme="@style/Theme.UMoney.NoActionBar" />
     </application>
 
 </manifest>
