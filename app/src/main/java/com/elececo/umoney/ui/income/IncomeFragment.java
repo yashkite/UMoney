@@ -18,10 +18,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.app.Activity;
 import android.content.Intent;
 import androidx.annotation.Nullable;
+import com.elececo.umoney.data.model.UserPreferences;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import com.elececo.umoney.ui.common.TransactionEntryDialog;
+import java.util.List;
 
 public class IncomeFragment extends BaseFragment<IncomeViewModel> implements TransactionEntryDialog.TransactionEntryListener {
     private static final int PICK_FILE_REQUEST = 1;
@@ -47,25 +49,53 @@ public class IncomeFragment extends BaseFragment<IncomeViewModel> implements Tra
         viewModel.getTransactions().observe(getViewLifecycleOwner(), transactions -> {
             adapter.setTransactions(transactions);
             
-            // Update summary card
-            double inAmount = 0;
-            double outAmount = 0;
-            for (Transaction transaction : transactions) {
-                if (transaction.getAmount() > 0) {
-                    inAmount += transaction.getAmount();
-                } else {
-                    outAmount += Math.abs(transaction.getAmount());
-                }
-            }
+            final double finalInAmount = calculateInAmount(transactions);
+            final double finalOutAmount = calculateOutAmount(transactions);
+            final double finalTotalIncome = finalInAmount - finalOutAmount;
             
             TextView inAmountView = requireView().findViewById(R.id.in_amount);
             TextView outAmountView = requireView().findViewById(R.id.out_amount);
             TextView holdAmountView = requireView().findViewById(R.id.hold_amount);
             
-            inAmountView.setText(String.format("In: ₹%.2f", inAmount));
-            outAmountView.setText(String.format("Out: ₹%.2f", outAmount));
-            holdAmountView.setText(String.format("Hold: ₹%.2f", inAmount - outAmount));
+            inAmountView.setText(String.format("In: ₹%.2f", finalInAmount));
+            outAmountView.setText(String.format("Out: ₹%.2f", finalOutAmount));
+            holdAmountView.setText(String.format("Hold: ₹%.2f", finalTotalIncome));
+
+            viewModel.getUserPreferences().observe(getViewLifecycleOwner(), preferences -> {
+                double needsPercentage = preferences.getNeedsPercentage() / 100.0;
+                double wantsPercentage = preferences.getWantsPercentage() / 100.0;
+                double savingsPercentage = preferences.getSavingsPercentage() / 100.0;
+
+                double needsAmount = finalTotalIncome * needsPercentage;
+                double wantsAmount = finalTotalIncome * wantsPercentage;
+                double savingsAmount = finalTotalIncome * savingsPercentage;
+
+                TextView needsPercentageView = requireView().findViewById(R.id.needs_percentage);
+                TextView wantsPercentageView = requireView().findViewById(R.id.wants_percentage);
+                TextView savingsPercentageView = requireView().findViewById(R.id.savings_percentage);
+
+                needsPercentageView.setText(String.format("Needs (%d%%): ₹%.2f", 
+                    preferences.getNeedsPercentage(), needsAmount));
+                wantsPercentageView.setText(String.format("Wants (%d%%): ₹%.2f", 
+                    preferences.getWantsPercentage(), wantsAmount));
+                savingsPercentageView.setText(String.format("Savings (%d%%): ₹%.2f", 
+                    preferences.getSavingsPercentage(), savingsAmount));
+            });
         });
+    }
+    
+    private double calculateInAmount(List<Transaction> transactions) {
+        return transactions.stream()
+            .filter(transaction -> transaction.getAmount() > 0)
+            .mapToDouble(Transaction::getAmount)
+            .sum();
+    }
+    
+    private double calculateOutAmount(List<Transaction> transactions) {
+        return transactions.stream()
+            .filter(transaction -> transaction.getAmount() < 0)
+            .mapToDouble(transaction -> Math.abs(transaction.getAmount()))
+            .sum();
     }
     
     @Override

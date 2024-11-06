@@ -16,6 +16,7 @@ import com.elececo.umoney.R;
 import com.elececo.umoney.ui.auth.GoogleLoginActivity;
 import com.elececo.umoney.ui.dashboard.fragments.DashboardFragment;
 import com.elececo.umoney.ui.needs.NeedsFragment;
+import com.elececo.umoney.ui.settings.SettingsActivity;
 import com.elececo.umoney.ui.wants.WantsFragment;
 import com.elececo.umoney.ui.savings.SavingsFragment;
 import com.elececo.umoney.ui.income.IncomeFragment;
@@ -112,7 +113,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } else if (itemId == R.id.nav_about) {
             startActivity(new Intent(this, AboutActivity.class));
         } else if (itemId == R.id.nav_settings) {
-            // TODO: Navigate to Settings
+            startActivity(new Intent(this, SettingsActivity.class));
         } else if (itemId == R.id.nav_categories) {
             // TODO: Navigate to Categories
         } else if (itemId == R.id.nav_logout) {

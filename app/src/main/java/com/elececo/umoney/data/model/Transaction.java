@@ -12,6 +12,7 @@ public class Transaction {
     private String userId;
     private String notes;
     private String attachmentUri;
+    private String parentTransactionId;
 
     // Required for Firestore
     public Transaction() {}
@@ -95,5 +96,13 @@ public class Transaction {
 
     public void setAttachmentUri(String attachmentUri) {
         this.attachmentUri = attachmentUri;
+    }
+
+    public String getParentTransactionId() {
+        return parentTransactionId;
+    }
+
+    public void setParentTransactionId(String parentTransactionId) {
+        this.parentTransactionId = parentTransactionId;
     }
 } 

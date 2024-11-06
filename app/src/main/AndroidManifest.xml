@@ -32,6 +32,9 @@
         <activity
             android:name=".ui.about.AboutActivity"
             android:theme="@style/Theme.UMoney.NoActionBar" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:theme="@style/Theme.UMoney.NoActionBar" />
     </application>
 
 </manifest>
