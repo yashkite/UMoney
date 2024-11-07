@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 
 import androidx.annotation.NonNull;
 import com.elececo.umoney.R;
@@ -111,9 +113,15 @@ public class TransactionEntryDialog extends Dialog {
             categoryInput.setAdapter(categoryAdapter);
         }
 
-        // Initialize date/time formatter
+        // Initialize calendar and formatter
         calendar = Calendar.getInstance();
         dateTimeFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+
+        // Setup date time picker
+        setupDateTimePicker();
+
+        // Set initial date time
+        TextInputEditText dateTimeInput = findViewById(R.id.date_time_input);
         dateTimeInput.setText(dateTimeFormatter.format(calendar.getTime()));
 
         // Set up click listeners
@@ -178,6 +186,36 @@ public class TransactionEntryDialog extends Dialog {
             attachmentButton.setText(fileName);
             attachmentButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setupDateTimePicker() {
+        dateTimeInput.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                (view, year, month, dayOfMonth) -> {
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(
+                        getContext(),
+                        (timeView, hourOfDay, minute) -> {
+                            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            calendar.set(Calendar.MINUTE, minute);
+                            dateTimeInput.setText(dateTimeFormatter.format(calendar.getTime()));
+                        },
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        false
+                    );
+                    timePickerDialog.show();
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
+        });
     }
 
     public interface TransactionEntryListener {
