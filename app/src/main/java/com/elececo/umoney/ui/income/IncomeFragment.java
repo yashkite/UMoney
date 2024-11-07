@@ -4,140 +4,150 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.textfield.TextInputLayout;
 import com.elececo.umoney.R;
 import com.elececo.umoney.ui.base.BaseFragment;
 import com.elececo.umoney.ui.common.TransactionEntryDialog;
 import com.elececo.umoney.ui.income.viewmodel.IncomeViewModel;
-import com.elececo.umoney.ui.common.TransactionAdapter;
 import com.elececo.umoney.data.model.Transaction;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import android.app.Activity;
-import android.content.Intent;
-import androidx.annotation.Nullable;
-import com.elececo.umoney.data.model.UserPreferences;
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import com.elececo.umoney.ui.common.TransactionEntryDialog;
 import java.util.List;
 
-public class IncomeFragment extends BaseFragment<IncomeViewModel> implements TransactionEntryDialog.TransactionEntryListener {
-    private static final int PICK_FILE_REQUEST = 1;
-    private TransactionEntryDialog dialog;
-
+public class IncomeFragment extends BaseFragment<IncomeViewModel> {
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_income, container, false);
     }
-    
+
     @Override
     protected Class<IncomeViewModel> getViewModelClass() {
         return IncomeViewModel.class;
     }
-    
+
     @Override
     protected void setupObservers() {
-        RecyclerView transactionsList = requireView().findViewById(R.id.transactions_list);
-        TransactionAdapter adapter = new TransactionAdapter();
-        transactionsList.setLayoutManager(new LinearLayoutManager(requireContext()));
-        transactionsList.setAdapter(adapter);
-
+        // Setup transaction list observer
         viewModel.getTransactions().observe(getViewLifecycleOwner(), transactions -> {
             adapter.setTransactions(transactions);
-            
-            final double finalInAmount = calculateInAmount(transactions);
-            final double finalOutAmount = calculateOutAmount(transactions);
-            final double finalTotalIncome = finalInAmount - finalOutAmount;
-            
-            TextView inAmountView = requireView().findViewById(R.id.in_amount);
-            TextView outAmountView = requireView().findViewById(R.id.out_amount);
-            TextView holdAmountView = requireView().findViewById(R.id.hold_amount);
-            
-            inAmountView.setText(String.format("In: ₹%.2f", finalInAmount));
-            outAmountView.setText(String.format("Out: ₹%.2f", finalOutAmount));
-            holdAmountView.setText(String.format("Hold: ₹%.2f", finalTotalIncome));
-
-            viewModel.getUserPreferences().observe(getViewLifecycleOwner(), preferences -> {
-                double needsPercentage = preferences.getNeedsPercentage() / 100.0;
-                double wantsPercentage = preferences.getWantsPercentage() / 100.0;
-                double savingsPercentage = preferences.getSavingsPercentage() / 100.0;
-
-                double needsAmount = finalTotalIncome * needsPercentage;
-                double wantsAmount = finalTotalIncome * wantsPercentage;
-                double savingsAmount = finalTotalIncome * savingsPercentage;
-
-                TextView needsPercentageView = requireView().findViewById(R.id.needs_percentage);
-                TextView wantsPercentageView = requireView().findViewById(R.id.wants_percentage);
-                TextView savingsPercentageView = requireView().findViewById(R.id.savings_percentage);
-
-                needsPercentageView.setText(String.format("Needs (%d%%): ₹%.2f", 
-                    preferences.getNeedsPercentage(), needsAmount));
-                wantsPercentageView.setText(String.format("Wants (%d%%): ₹%.2f", 
-                    preferences.getWantsPercentage(), wantsAmount));
-                savingsPercentageView.setText(String.format("Savings (%d%%): ₹%.2f", 
-                    preferences.getSavingsPercentage(), savingsAmount));
-            });
+            updateSummaryCard(transactions);
         });
     }
-    
-    private double calculateInAmount(List<Transaction> transactions) {
-        return transactions.stream()
-            .filter(transaction -> transaction.getAmount() > 0)
-            .mapToDouble(Transaction::getAmount)
-            .sum();
-    }
-    
-    private double calculateOutAmount(List<Transaction> transactions) {
-        return transactions.stream()
-            .filter(transaction -> transaction.getAmount() < 0)
-            .mapToDouble(transaction -> Math.abs(transaction.getAmount()))
-            .sum();
-    }
-    
+
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        
-        FloatingActionButton fab = view.findViewById(R.id.fab_add_income);
-        fab.setImageResource(R.drawable.ic_add);
-        fab.setOnClickListener(v -> showAddTransactionDialog());
+    protected String getTransactionType() {
+        return "INCOME";
     }
-    
-    private void showAddTransactionDialog() {
+
+    @Override
+    protected String getCardTitle() {
+        return "Income Summary";
+    }
+
+    @Override
+    protected boolean isExpenseType() {
+        return false;
+    }
+
+    @Override
+    protected void showTransactionDialog() {
         dialog = new TransactionEntryDialog(
             requireContext(),
-            "INCOME",
+            getTransactionType(),
             this
         );
+        
+        // Wait for dialog to be created and then customize it
+        dialog.setOnShowListener(dialogInterface -> {
+            // Hide recipient field since it's not needed for income
+            TextInputLayout recipientLayout = dialog.findViewById(R.id.recipient_layout);
+            if (recipientLayout != null) {
+                recipientLayout.setVisibility(View.GONE);
+            }
+
+            // Set category hint to "Source"
+            TextInputLayout categoryLayout = dialog.findViewById(R.id.category_layout);
+            if (categoryLayout != null) {
+                categoryLayout.setHint("Source");
+                AutoCompleteTextView categoryInput = dialog.findViewById(R.id.category_input);
+                if (categoryInput != null) {
+                    String[] categories = {"Salary", "Freelance", "Business", "Investment", "Rental", "Other"};
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        categories
+                    );
+                    categoryInput.setAdapter(adapter);
+                }
+            }
+
+            // Set amount hint
+            TextInputLayout amountLayout = dialog.findViewById(R.id.amount_layout);
+            if (amountLayout != null) {
+                amountLayout.setHint("Income Amount");
+            }
+
+            // Customize dialog window
+            Window window = dialog.getWindow();
+            if (window != null) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.width = WindowManager.LayoutParams.MATCH_PARENT;
+                params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                window.setAttributes(params);
+            }
+        });
+        
         dialog.show();
     }
-    
+
     @Override
     public void onTransactionSaved(Transaction transaction) {
-        viewModel.saveTransaction(transaction);
-    }
-    
-    @Override
-    public void launchFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        String[] mimeTypes = {"image/*", "application/pdf"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        startActivityForResult(intent, PICK_FILE_REQUEST);
-    }
-    
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_FILE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            if (dialog != null) {
-                dialog.handleFilePickerResult(data.getData());
-            }
-        }
+        super.onTransactionSaved(transaction);
+        
+        // Get user preferences for distribution percentages
+        viewModel.getUserPreferences().observe(getViewLifecycleOwner(), prefs -> {
+            double amount = transaction.getAmount();
+            
+            // Create needs transaction
+            Transaction needsTransaction = new Transaction(
+                (amount * prefs.getNeedsPercentage()) / 100,
+                transaction.getTimestamp(),
+                "Auto Distribution",
+                "Income Distribution",
+                "NEEDS"
+            );
+            needsTransaction.setNotes("Distributed from income: " + transaction.getCategory());
+            needsTransaction.setParentTransactionId(transaction.getId());
+            
+            // Create wants transaction
+            Transaction wantsTransaction = new Transaction(
+                (amount * prefs.getWantsPercentage()) / 100,
+                transaction.getTimestamp(),
+                "Auto Distribution",
+                "Income Distribution",
+                "WANTS"
+            );
+            wantsTransaction.setNotes("Distributed from income: " + transaction.getCategory());
+            wantsTransaction.setParentTransactionId(transaction.getId());
+            
+            // Create savings transaction
+            Transaction savingsTransaction = new Transaction(
+                (amount * prefs.getSavingsPercentage()) / 100,
+                transaction.getTimestamp(),
+                "Auto Distribution",
+                "Income Distribution",
+                "SAVINGS"
+            );
+            savingsTransaction.setNotes("Distributed from income: " + transaction.getCategory());
+            savingsTransaction.setParentTransactionId(transaction.getId());
+            
+            // Save all distributed transactions
+            viewModel.distributeIncome(needsTransaction, wantsTransaction, savingsTransaction);
+        });
     }
 }

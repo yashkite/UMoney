@@ -158,7 +158,7 @@ public class TransactionEntryDialog extends Dialog {
             isValid = false;
         }
 
-        if (recipient.isEmpty()) {
+        if (recipientLayout.getVisibility() == View.VISIBLE && recipient.isEmpty()) {
             recipientInput.setError("Recipient is required");
             isValid = false;
         }

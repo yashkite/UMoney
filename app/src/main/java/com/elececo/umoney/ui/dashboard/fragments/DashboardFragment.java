@@ -21,7 +21,22 @@ public class DashboardFragment extends BaseFragment<DashboardViewModel> {
     }
     
     @Override
-    protected void setupObservers() {
-        // TODO: Setup observers for dashboard data
+    protected String getTransactionType() {
+        return "DASHBOARD";
+    }
+
+    @Override
+    protected String getCardTitle() {
+        return "Dashboard Summary";
+    }
+
+    @Override
+    protected boolean isExpenseType() {
+        return false;
+    }
+
+    @Override
+    protected boolean hasTransactionList() {
+        return false; // Dashboard doesn't have transaction list
     }
 } 
