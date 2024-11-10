@@ -8,6 +8,7 @@ import com.elececo.umoney.ui.base.BaseViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -58,23 +59,7 @@ public class IncomeViewModel extends BaseViewModel {
     }
 
     public void distributeIncome(Transaction needs, Transaction wants, Transaction savings) {
-        String userId = auth.getCurrentUser().getUid();
-        
-        // Save all distributed transactions to Firestore
-        db.collection("users").document(userId)
-            .collection("transactions")
-            .add(needs)
-            .addOnSuccessListener(documentReference -> {
-                // Save wants after needs is saved
-                db.collection("users").document(userId)
-                    .collection("transactions")
-                    .add(wants)
-                    .addOnSuccessListener(ref -> {
-                        // Save savings after wants is saved
-                        db.collection("users").document(userId)
-                            .collection("transactions")
-                            .add(savings);
-                    });
-            });
+        List<Transaction> transactions = Arrays.asList(needs, wants, savings);
+        repository.saveDistributedTransactions(transactions);
     }
 }

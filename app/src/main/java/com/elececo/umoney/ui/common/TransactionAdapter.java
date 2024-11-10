@@ -5,19 +5,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.elececo.umoney.R;
 import com.elececo.umoney.data.model.Transaction;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
-    private List<Transaction> transactions;
+    private List<Transaction> transactions = new ArrayList<>();
     private final SimpleDateFormat dateFormat;
 
     public TransactionAdapter() {
         this.dateFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
+    }
+
+    public void setTransactions(List<Transaction> newTransactions) {
+        List<Transaction> oldList = new ArrayList<>(this.transactions);
+        List<Transaction> newList = newTransactions != null ? new ArrayList<>(newTransactions) : new ArrayList<>();
+        
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new TransactionDiffCallback(oldList, newList));
+        this.transactions = newList;
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -31,10 +42,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Transaction transaction = transactions.get(position);
-        holder.amountText.setText(String.format("₹%.2f", transaction.getAmount()));
-        holder.recipientText.setText(transaction.getRecipient());
-        holder.categoryText.setText(transaction.getCategory());
-        holder.dateText.setText(dateFormat.format(transaction.getTimestamp()));
+        holder.bind(transaction, dateFormat);
     }
 
     @Override
@@ -42,9 +50,51 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return transactions != null ? transactions.size() : 0;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-        notifyDataSetChanged();
+    private static class TransactionDiffCallback extends DiffUtil.Callback {
+        private final List<Transaction> oldList;
+        private final List<Transaction> newList;
+
+        TransactionDiffCallback(List<Transaction> oldList, List<Transaction> newList) {
+            this.oldList = oldList != null ? oldList : new ArrayList<>();
+            this.newList = newList != null ? newList : new ArrayList<>();
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            Transaction oldItem = oldList.get(oldItemPosition);
+            Transaction newItem = newList.get(newItemPosition);
+            
+            if (oldItem == null || newItem == null) {
+                return false;
+            }
+            
+            String oldId = oldItem.getId();
+            String newId = newItem.getId();
+            
+            return (oldId != null && newId != null && oldId.equals(newId));
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            Transaction oldItem = oldList.get(oldItemPosition);
+            Transaction newItem = newList.get(newItemPosition);
+            
+            if (oldItem == null || newItem == null) {
+                return false;
+            }
+            
+            return oldItem.equals(newItem);
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -59,6 +109,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             recipientText = view.findViewById(R.id.transaction_recipient);
             categoryText = view.findViewById(R.id.transaction_category);
             dateText = view.findViewById(R.id.transaction_date);
+        }
+
+        void bind(Transaction transaction, SimpleDateFormat dateFormat) {
+            amountText.setText(String.format("₹%.2f", transaction.getAmount()));
+            recipientText.setText(transaction.getRecipient());
+            categoryText.setText(transaction.getCategory());
+            dateText.setText(dateFormat.format(transaction.getTimestamp()));
         }
     }
 } 

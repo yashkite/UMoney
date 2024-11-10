@@ -41,6 +41,12 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Remove the observer setup from here as it's already handled in setupObservers()
+    }
+
     protected boolean hasTransactionList() {
         return getView().findViewById(R.id.transactions_list) != null;
     }
@@ -68,10 +74,17 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     }
 
     protected void setupObservers() {
-        viewModel.getTransactions().observe(getViewLifecycleOwner(), transactions -> {
-            adapter.setTransactions(transactions);
-            updateSummaryCard(transactions);
-        });
+        if (viewModel != null && hasTransactionList()) {
+            // Remove any existing observers before adding new one
+            viewModel.getTransactions().removeObservers(getViewLifecycleOwner());
+            
+            viewModel.getTransactions().observe(getViewLifecycleOwner(), transactions -> {
+                if (transactions != null && adapter != null) {
+                    adapter.setTransactions(transactions);
+                    updateSummaryCard(transactions);
+                }
+            });
+        }
     }
 
     protected void updateSummaryCard(List<Transaction> transactions) {

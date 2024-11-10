@@ -1,6 +1,7 @@
 package com.elececo.umoney.data.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Transaction {
     private String id;
@@ -104,5 +105,24 @@ public class Transaction {
 
     public void setParentTransactionId(String parentTransactionId) {
         this.parentTransactionId = parentTransactionId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        
+        Transaction that = (Transaction) o;
+        return Double.compare(that.amount, amount) == 0 &&
+               Objects.equals(id, that.id) &&
+               Objects.equals(timestamp, that.timestamp) &&
+               Objects.equals(recipient, that.recipient) &&
+               Objects.equals(category, that.category) &&
+               Objects.equals(type, that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, amount, timestamp, recipient, category, type);
     }
 } 

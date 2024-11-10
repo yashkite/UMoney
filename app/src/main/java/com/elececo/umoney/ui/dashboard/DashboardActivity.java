@@ -29,6 +29,11 @@ import com.google.firebase.auth.FirebaseAuth;
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     
     private DrawerLayout drawerLayout;
+    private Fragment dashboardFragment;
+    private Fragment needsFragment;
+    private Fragment wantsFragment;
+    private Fragment savingsFragment;
+    private Fragment incomeFragment;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,39 +58,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         
-        // Setup Bottom Navigation
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
-            
-            int itemId = item.getItemId();
-            if (itemId == R.id.navigation_dashboard) {
-                selectedFragment = new DashboardFragment();
-            } else if (itemId == R.id.navigation_needs) {
-                selectedFragment = new NeedsFragment();
-            } else if (itemId == R.id.navigation_wants) {
-                selectedFragment = new WantsFragment();
-            } else if (itemId == R.id.navigation_savings) {
-                selectedFragment = new SavingsFragment();
-            } else if (itemId == R.id.navigation_income) {
-                selectedFragment = new IncomeFragment();
-            }
-            
-            if (selectedFragment != null) {
-                getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, selectedFragment)
-                    .commit();
-            }
-            
-            return true;
-        });
-        
-        // Set default fragment
         if (savedInstanceState == null) {
+            dashboardFragment = new DashboardFragment();
+            needsFragment = new NeedsFragment();
+            wantsFragment = new WantsFragment();
+            savingsFragment = new SavingsFragment();
+            incomeFragment = new IncomeFragment();
+            
             getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new DashboardFragment())
+                .replace(R.id.fragment_container, dashboardFragment)
                 .commit();
         }
+        
+        setupBottomNavigation();
         
         // Setup Navigation Header
         setupNavHeader(navigationView);
@@ -102,6 +87,34 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             nameTextView.setText(auth.getCurrentUser().getDisplayName());
             emailTextView.setText(auth.getCurrentUser().getEmail());
         }
+    }
+    
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_dashboard) {
+                selectedFragment = dashboardFragment;
+            } else if (itemId == R.id.navigation_needs) {
+                selectedFragment = needsFragment;
+            } else if (itemId == R.id.navigation_wants) {
+                selectedFragment = wantsFragment;
+            } else if (itemId == R.id.navigation_savings) {
+                selectedFragment = savingsFragment;
+            } else if (itemId == R.id.navigation_income) {
+                selectedFragment = incomeFragment;
+            }
+            
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, selectedFragment)
+                    .commit();
+            }
+            
+            return true;
+        });
     }
     
     @Override
