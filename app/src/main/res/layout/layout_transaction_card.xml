@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="@color/card_background_light"
     app:cardElevation="4dp">
 
     <LinearLayout
@@ -18,13 +19,14 @@
             android:id="@+id/card_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:textColor="@color/text_color"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
             <TextView
@@ -34,8 +36,8 @@
                 android:layout_weight="1"
                 android:text="In: ₹0"
                 android:gravity="center"
-                android:textColor="@android:color/holo_green_dark"
-                android:textSize="14sp" />
+                android:textColor="@color/positive_balance"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/hold_amount"
@@ -44,22 +46,19 @@
                 android:layout_weight="1.2"
                 android:text="Hold: ₹0"
                 android:gravity="center"
-
-                android:textColor="@color/black"
+                android:textColor="@color/hold_balance"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                 />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/out_amount"
                 android:layout_width="0dp"
-                android:gravity="center"
-
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="Out: ₹0"
-                android:textColor="@android:color/holo_red_dark"
-                android:textSize="14sp" />
+                android:textColor="@color/negative_balance"
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView> 
