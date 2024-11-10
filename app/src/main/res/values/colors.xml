@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Brand colors -->
-    <color name="primary">#0052CC</color>
+    <color name="primary">#1976D2</color>
     <color name="primary_dark">#002984</color>
     <color name="primary_light">#5479FF</color>
     

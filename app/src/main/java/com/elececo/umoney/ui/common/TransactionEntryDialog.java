@@ -90,19 +90,11 @@ public class TransactionEntryDialog extends Dialog {
                 recipientLayout.setHint("Received From");
                 break;
             case "NEEDS":
-                titleView.setText("Add Needs Expense");
-                amountLayout.setHint("Expense Amount");
-                recipientLayout.setHint("Paid To");
-                break;
             case "WANTS":
-                titleView.setText("Add Wants Expense");
+            case "SAVINGS":
+                titleView.setText("Add " + type.charAt(0) + type.substring(1).toLowerCase() + " Expense");
                 amountLayout.setHint("Expense Amount");
                 recipientLayout.setHint("Paid To");
-                break;
-            case "SAVINGS":
-                titleView.setText("Add Savings Transaction");
-                amountLayout.setHint("Amount");
-                recipientLayout.setHint("Account/Investment");
                 break;
         }
 
@@ -138,8 +130,13 @@ public class TransactionEntryDialog extends Dialog {
         String notes = notesInput.getText().toString();
 
         if (validateInputs(amount, recipient, category)) {
+            double transactionAmount = Double.parseDouble(amount);
+            if (!type.equals("INCOME")) {
+                transactionAmount = -transactionAmount;
+            }
+
             Transaction transaction = new Transaction(
-                Double.parseDouble(amount),
+                transactionAmount,
                 calendar.getTime(),
                 recipient,
                 category,

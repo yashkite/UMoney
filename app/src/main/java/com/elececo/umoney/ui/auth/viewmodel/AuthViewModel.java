@@ -10,7 +10,11 @@ import com.elececo.umoney.data.model.User;
 import com.elececo.umoney.data.model.AuthResult;
 import com.elececo.umoney.data.repository.AuthRepository;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthViewModel extends AndroidViewModel {
     private final AuthRepository authRepository;
@@ -90,6 +94,7 @@ public class AuthViewModel extends AndroidViewModel {
                     authRepository.createNewUser(user)
                         .addOnSuccessListener(aVoid -> {
                             isFirstTimeUser.setValue(true);
+                            userLiveData.setValue(user);
                             authResult.setValue(new AuthResult(true, null));
                         })
                         .addOnFailureListener(e -> {
@@ -97,7 +102,12 @@ public class AuthViewModel extends AndroidViewModel {
                         });
                 } else {
                     User existingUser = documentSnapshot.toObject(User.class);
-                    isFirstTimeUser.setValue(existingUser != null && existingUser.isFirstTimeUser());
+                    boolean isFirstTime = existingUser == null || 
+                        existingUser.isFirstTimeUser() || 
+                        existingUser.getMonthlyIncome() == 0 ||
+                        existingUser.getDisplayName() == null;
+                    isFirstTimeUser.setValue(isFirstTime);
+                    userLiveData.setValue(existingUser);
                     authResult.setValue(new AuthResult(true, null));
                 }
             });
@@ -113,5 +123,57 @@ public class AuthViewModel extends AndroidViewModel {
     
     public LiveData<AuthResult> getAuthResult() {
         return authResult;
+    }
+    
+    public LiveData<Boolean> saveUserSetup(String displayName, double monthlyIncome, String employmentType) {
+        MutableLiveData<Boolean> setupResult = new MutableLiveData<>();
+        FirebaseUser currentUser = getCurrentUser();
+        
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("displayName", displayName);
+            updates.put("monthlyIncome", monthlyIncome);
+            updates.put("employmentType", employmentType);
+            updates.put("firstTimeUser", false);
+            updates.put("needsPercentage", 50);
+            updates.put("wantsPercentage", 30);
+            updates.put("savingsPercentage", 20);
+            
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(displayName)
+                .build();
+                
+            currentUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        authRepository.updateUser(userId, updates)
+                            .addOnSuccessListener(aVoid -> setupResult.setValue(true))
+                            .addOnFailureListener(e -> setupResult.setValue(false));
+                    } else {
+                        setupResult.setValue(false);
+                    }
+                });
+        } else {
+            setupResult.setValue(false);
+        }
+        
+        return setupResult;
+    }
+    
+    public void setIsFirstTimeUser(boolean isFirstTime) {
+        isFirstTimeUser.setValue(isFirstTime);
+        
+        if (getCurrentUser() != null) {
+            String userId = getCurrentUser().getUid();
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("firstTimeUser", isFirstTime);
+            
+            authRepository.updateUser(userId, updates)
+                .addOnFailureListener(e -> {
+                    // If update fails, revert the local value
+                    isFirstTimeUser.setValue(!isFirstTime);
+                });
+        }
     }
 } 

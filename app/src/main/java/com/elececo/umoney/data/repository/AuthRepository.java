@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.DocumentSnapshot;
+import java.util.Map;
 
 public class AuthRepository {
     private final FirebaseAuth firebaseAuth;
@@ -55,5 +56,12 @@ public class AuthRepository {
         return firestore.collection("users")
                        .document(userId)
                        .get();
+    }
+    
+    public Task<Void> updateUser(String userId, Map<String, Object> updates) {
+        return FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .update(updates);
     }
 } 
