@@ -24,6 +24,16 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.LinkedHashSet;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import com.elececo.umoney.ui.categories.CategoriesViewModel;
 
 public class TransactionEntryDialog extends Dialog {
     private static final int PICK_FILE_REQUEST = 1;
@@ -44,13 +54,6 @@ public class TransactionEntryDialog extends Dialog {
     private Uri attachmentUri;
     private Calendar calendar;
     private SimpleDateFormat dateTimeFormatter;
-
-    private static final Map<String, String[]> CATEGORIES = new HashMap<String, String[]>() {{
-        put("NEEDS", new String[]{"Food", "Transportation", "Housing", "Utilities", "Healthcare", "Education"});
-        put("WANTS", new String[]{"Entertainment", "Shopping", "Dining", "Travel", "Hobbies", "Gadgets"});
-        put("SAVINGS", new String[]{"Emergency Fund", "Retirement", "Investment", "Goals", "Insurance"});
-        put("INCOME", new String[]{"Salary", "Freelance", "Business", "Investment", "Rental", "Other"});
-    }};
 
     public TransactionEntryDialog(@NonNull Context context, String type, TransactionEntryListener listener) {
         super(context);
@@ -103,15 +106,8 @@ public class TransactionEntryDialog extends Dialog {
                 break;
         }
 
-        // Set up category adapter based on type
-        if (CATEGORIES.containsKey(type)) {
-            ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                CATEGORIES.get(type)
-            );
-            categoryInput.setAdapter(categoryAdapter);
-        }
+        // Load categories for the dropdown
+        loadCategories();
 
         // Initialize calendar and formatter
         calendar = Calendar.getInstance();
@@ -216,6 +212,46 @@ public class TransactionEntryDialog extends Dialog {
             );
             datePickerDialog.show();
         });
+    }
+
+    private void loadCategories() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .collection("categories")
+            .document(type)
+            .get()
+            .addOnSuccessListener(document -> {
+                Set<String> uniqueCategories = new LinkedHashSet<>();
+                
+                if (document.exists() && document.get("items") != null) {
+                    // Load saved categories (including both custom and default)
+                    uniqueCategories.addAll((List<String>) document.get("items"));
+                } else {
+                    // If no document exists, load default categories from CategoriesViewModel
+                    uniqueCategories.addAll(Arrays.asList(CategoriesViewModel.CATEGORIES.get(type)));
+                }
+                
+                List<String> allCategories = new ArrayList<>(uniqueCategories);
+                
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                    getContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    allCategories
+                );
+                categoryInput.setAdapter(categoryAdapter);
+                categoryInput.setThreshold(1);
+            })
+            .addOnFailureListener(e -> {
+                // Fallback to default categories if loading fails
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                    getContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    CategoriesViewModel.CATEGORIES.get(type)
+                );
+                categoryInput.setAdapter(categoryAdapter);
+            });
     }
 
     public interface TransactionEntryListener {

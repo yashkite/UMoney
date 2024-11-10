@@ -25,6 +25,7 @@ import com.elececo.umoney.ui.about.AboutActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.elececo.umoney.ui.categories.CategoriesActivity;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     
@@ -128,7 +129,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } else if (itemId == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (itemId == R.id.nav_categories) {
-            // TODO: Navigate to Categories
+            startActivity(new Intent(this, CategoriesActivity.class));
         } else if (itemId == R.id.nav_logout) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, GoogleLoginActivity.class));
