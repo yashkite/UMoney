@@ -56,6 +56,7 @@ dependencies {
     // Fragments
     implementation "androidx.fragment:fragment:1.8.5"
     implementation "androidx.fragment:fragment-ktx:1.8.5"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-android:2.8.7'
 
     // Testing
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

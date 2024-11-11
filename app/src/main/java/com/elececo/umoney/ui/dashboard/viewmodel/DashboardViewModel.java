@@ -1,5 +1,6 @@
 package com.elececo.umoney.ui.dashboard.viewmodel;
 
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.elececo.umoney.data.model.DashboardData;
@@ -11,6 +12,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Map;
 
 public class DashboardViewModel extends BaseViewModel {
+    private static final String TAG = "DashboardViewModel";
     private MutableLiveData<DashboardData> dashboardData = new MutableLiveData<>();
     private FirebaseFirestore db;
     private FirebaseAuth auth;
@@ -19,6 +21,7 @@ public class DashboardViewModel extends BaseViewModel {
         super();
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+        Log.d(TAG, "DashboardViewModel initialized");
         loadDashboardData();
     }
 
@@ -27,7 +30,13 @@ public class DashboardViewModel extends BaseViewModel {
     }
     
     private void loadDashboardData() {
+        if (auth.getCurrentUser() == null) {
+            Log.e(TAG, "User is not authenticated");
+            return;
+        }
+
         String userId = auth.getCurrentUser().getUid();
+        Log.d(TAG, "Loading dashboard data for user: " + userId);
         
         db.collection("users").document(userId)
             .get()
@@ -35,40 +44,75 @@ public class DashboardViewModel extends BaseViewModel {
                 if (document.exists()) {
                     double monthlyIncome = document.getDouble("monthlyIncome") != null ? 
                         document.getDouble("monthlyIncome") : 0.0;
+                    Log.d(TAG, "Monthly income loaded: " + monthlyIncome);
                     calculateTotals(userId, monthlyIncome);
+                } else {
+                    Log.e(TAG, "Document does not exist");
+                    dashboardData.setValue(new DashboardData(0.0, 0.0, 0.0, 0.0));
                 }
+            })
+            .addOnFailureListener(e -> {
+                Log.e(TAG, "Error loading dashboard data", e);
+                dashboardData.setValue(new DashboardData(0.0, 0.0, 0.0, 0.0));
             });
     }
     
     private void calculateTotals(String userId, double monthlyIncome) {
-        db.collection("transactions")
-            .whereEqualTo("userId", userId)
+        Log.d(TAG, "Calculating totals for monthly income: " + monthlyIncome);
+        
+        db.collection("users")
+            .document(userId)
+            .collection("transactions")
             .get()
             .addOnSuccessListener(querySnapshot -> {
-                double totalNeeds = 0;
-                double totalWants = 0;
-                double totalSavings = 0;
+                double totalNeedsIn = 0;
+                double totalNeedsOut = 0;
+                double totalWantsIn = 0;
+                double totalWantsOut = 0;
+                double totalSavingsIn = 0;
+                double totalSavingsOut = 0;
                 
                 for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                     String type = doc.getString("type");
-                    double amount = doc.getDouble("amount") != null ? 
-                        doc.getDouble("amount") : 0.0;
+                    Double amount = doc.getDouble("amount");
+                    
+                    if (amount == null) {
+                        Log.w(TAG, "Transaction amount is null for doc: " + doc.getId());
+                        continue;
+                    }
+                    
+                    Log.d(TAG, "Processing transaction - Type: " + type + ", Amount: " + amount);
                     
                     switch (type) {
                         case "NEEDS":
-                            totalNeeds += amount;
+                            if (amount > 0) totalNeedsIn += amount;
+                            else totalNeedsOut += Math.abs(amount);
                             break;
                         case "WANTS":
-                            totalWants += amount;
+                            if (amount > 0) totalWantsIn += amount;
+                            else totalWantsOut += Math.abs(amount);
                             break;
                         case "SAVINGS":
-                            totalSavings += amount;
+                            if (amount > 0) totalSavingsIn += amount;
+                            else totalSavingsOut += Math.abs(amount);
                             break;
+                        default:
+                            Log.w(TAG, "Unknown transaction type: " + type);
                     }
                 }
                 
-                dashboardData.setValue(new DashboardData(
-                    monthlyIncome, totalNeeds, totalWants, totalSavings));
+                double needsHold = totalNeedsIn - totalNeedsOut;
+                double wantsHold = totalWantsIn - totalWantsOut;
+                double savingsHold = totalSavingsIn - totalSavingsOut;
+                
+                Log.d(TAG, String.format("Final calculations - Needs Hold: %.2f, Wants Hold: %.2f, Savings Hold: %.2f",
+                    needsHold, wantsHold, savingsHold));
+                
+                dashboardData.setValue(new DashboardData(monthlyIncome, needsHold, wantsHold, savingsHold));
+            })
+            .addOnFailureListener(e -> {
+                Log.e(TAG, "Error calculating totals", e);
+                dashboardData.setValue(new DashboardData(monthlyIncome, 0.0, 0.0, 0.0));
             });
     }
     

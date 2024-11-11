@@ -2,19 +2,20 @@ package com.elececo.umoney.data.model;
 
 public class DashboardData {
     private double monthlyIncome;
-    private double totalNeeds;
-    private double totalWants;
-    private double totalSavings;
+    private double needsHoldAmount;
+    private double wantsHoldAmount;
+    private double savingsHoldAmount;
 
-    public DashboardData(double monthlyIncome, double totalNeeds, double totalWants, double totalSavings) {
+    public DashboardData(double monthlyIncome, double needsHoldAmount, 
+                        double wantsHoldAmount, double savingsHoldAmount) {
         this.monthlyIncome = monthlyIncome;
-        this.totalNeeds = totalNeeds;
-        this.totalWants = totalWants;
-        this.totalSavings = totalSavings;
+        this.needsHoldAmount = needsHoldAmount;
+        this.wantsHoldAmount = wantsHoldAmount;
+        this.savingsHoldAmount = savingsHoldAmount;
     }
 
     public double getMonthlyIncome() { return monthlyIncome; }
-    public double getTotalNeeds() { return totalNeeds; }
-    public double getTotalWants() { return totalWants; }
-    public double getTotalSavings() { return totalSavings; }
+    public double getNeedsHoldAmount() { return needsHoldAmount; }
+    public double getWantsHoldAmount() { return wantsHoldAmount; }
+    public double getSavingsHoldAmount() { return savingsHoldAmount; }
 } 
