@@ -58,8 +58,6 @@ public class DashboardViewModel extends BaseViewModel {
     }
     
     private void calculateTotals(String userId, double monthlyIncome) {
-        Log.d(TAG, "Calculating totals for monthly income: " + monthlyIncome);
-        
         db.collection("users")
             .document(userId)
             .collection("transactions")
@@ -76,8 +74,8 @@ public class DashboardViewModel extends BaseViewModel {
                     String type = doc.getString("type");
                     Double amount = doc.getDouble("amount");
                     
-                    if (amount == null) {
-                        Log.w(TAG, "Transaction amount is null for doc: " + doc.getId());
+                    if (type == null || amount == null) {
+                        Log.w(TAG, "Skipping transaction with null type or amount, docId: " + doc.getId());
                         continue;
                     }
                     
@@ -96,6 +94,9 @@ public class DashboardViewModel extends BaseViewModel {
                             if (amount > 0) totalSavingsIn += amount;
                             else totalSavingsOut += Math.abs(amount);
                             break;
+                        case "INCOME":
+                            // Handle income type if needed
+                            break;
                         default:
                             Log.w(TAG, "Unknown transaction type: " + type);
                     }
@@ -104,9 +105,6 @@ public class DashboardViewModel extends BaseViewModel {
                 double needsHold = totalNeedsIn - totalNeedsOut;
                 double wantsHold = totalWantsIn - totalWantsOut;
                 double savingsHold = totalSavingsIn - totalSavingsOut;
-                
-                Log.d(TAG, String.format("Final calculations - Needs Hold: %.2f, Wants Hold: %.2f, Savings Hold: %.2f",
-                    needsHold, wantsHold, savingsHold));
                 
                 dashboardData.setValue(new DashboardData(monthlyIncome, needsHold, wantsHold, savingsHold));
             })

@@ -3,6 +3,8 @@ package com.elececo.umoney.ui.common;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -17,18 +19,27 @@ import java.util.Locale;
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
     private List<Transaction> transactions = new ArrayList<>();
     private final SimpleDateFormat dateFormat;
+    private final TransactionActionListener actionListener;
 
-    public TransactionAdapter() {
+    public interface TransactionActionListener {
+        void onEditTransaction(Transaction transaction);
+        void onDeleteTransaction(Transaction transaction);
+    }
+
+    public TransactionAdapter(TransactionActionListener listener) {
         this.dateFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
+        this.actionListener = listener;
     }
 
     public void setTransactions(List<Transaction> newTransactions) {
-        List<Transaction> oldList = new ArrayList<>(this.transactions);
+        List<Transaction> oldList = new ArrayList<>(this.transactions != null ? this.transactions : new ArrayList<>());
         List<Transaction> newList = newTransactions != null ? new ArrayList<>(newTransactions) : new ArrayList<>();
         
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new TransactionDiffCallback(oldList, newList));
         this.transactions = newList;
         diffResult.dispatchUpdatesTo(this);
+        
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -42,7 +53,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Transaction transaction = transactions.get(position);
-        holder.bind(transaction, dateFormat);
+        holder.bind(transaction, dateFormat, actionListener);
     }
 
     @Override
@@ -102,6 +113,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         TextView recipientText;
         TextView categoryText;
         TextView dateText;
+        ImageButton optionsButton;
 
         ViewHolder(View view) {
             super(view);
@@ -109,13 +121,30 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             recipientText = view.findViewById(R.id.transaction_recipient);
             categoryText = view.findViewById(R.id.transaction_category);
             dateText = view.findViewById(R.id.transaction_date);
+            optionsButton = view.findViewById(R.id.options_button);
         }
 
-        void bind(Transaction transaction, SimpleDateFormat dateFormat) {
+        void bind(Transaction transaction, SimpleDateFormat dateFormat, TransactionActionListener listener) {
             amountText.setText(String.format("₹%.2f", transaction.getAmount()));
             recipientText.setText(transaction.getRecipient());
             categoryText.setText(transaction.getCategory());
             dateText.setText(dateFormat.format(transaction.getTimestamp()));
+
+            optionsButton.setOnClickListener(v -> {
+                PopupMenu popup = new PopupMenu(v.getContext(), v);
+                popup.inflate(R.menu.menu_transaction_options);
+                popup.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == R.id.action_edit) {
+                        listener.onEditTransaction(transaction);
+                        return true;
+                    } else if (item.getItemId() == R.id.action_delete) {
+                        listener.onDeleteTransaction(transaction);
+                        return true;
+                    }
+                    return false;
+                });
+                popup.show();
+            });
         }
     }
 } 

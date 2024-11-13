@@ -8,15 +8,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import com.google.android.material.textfield.TextInputLayout;
+
 import com.elececo.umoney.R;
+import com.elececo.umoney.data.model.Transaction;
 import com.elececo.umoney.ui.base.BaseFragment;
 import com.elececo.umoney.ui.common.TransactionEntryDialog;
 import com.elececo.umoney.ui.income.viewmodel.IncomeViewModel;
-import com.elececo.umoney.data.model.Transaction;
-import java.util.List;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class IncomeFragment extends BaseFragment<IncomeViewModel> {
     
@@ -107,47 +105,17 @@ public class IncomeFragment extends BaseFragment<IncomeViewModel> {
 
     @Override
     public void onTransactionSaved(Transaction transaction) {
-        super.onTransactionSaved(transaction);
+        if (isExpenseType()) {
+            transaction.setAmount(-Math.abs(transaction.getAmount()));
+        }
         
-        // Get user preferences for distribution percentages
-        viewModel.getUserPreferences().observe(getViewLifecycleOwner(), prefs -> {
-            double amount = transaction.getAmount();
-            
-            // Create needs transaction
-            Transaction needsTransaction = new Transaction(
-                (amount * prefs.getNeedsPercentage()) / 100,
-                transaction.getTimestamp(),
-                "Auto Distribution",
-                "Income Distribution",
-                "NEEDS"
-            );
-            needsTransaction.setNotes("Distributed from income: " + transaction.getCategory());
-            needsTransaction.setParentTransactionId(transaction.getId());
-            
-            // Create wants transaction
-            Transaction wantsTransaction = new Transaction(
-                (amount * prefs.getWantsPercentage()) / 100,
-                transaction.getTimestamp(),
-                "Auto Distribution",
-                "Income Distribution",
-                "WANTS"
-            );
-            wantsTransaction.setNotes("Distributed from income: " + transaction.getCategory());
-            wantsTransaction.setParentTransactionId(transaction.getId());
-            
-            // Create savings transaction
-            Transaction savingsTransaction = new Transaction(
-                (amount * prefs.getSavingsPercentage()) / 100,
-                transaction.getTimestamp(),
-                "Auto Distribution",
-                "Income Distribution",
-                "SAVINGS"
-            );
-            savingsTransaction.setNotes("Distributed from income: " + transaction.getCategory());
-            savingsTransaction.setParentTransactionId(transaction.getId());
-            
-            // Save all distributed transactions
-            viewModel.distributeIncome(needsTransaction, wantsTransaction, savingsTransaction);
-        });
+        // Check if this is an edit (transaction has ID) or new transaction
+        if (transaction.getId() != null) {
+            // For existing transaction, update parent and distributed transactions
+            viewModel.updateDistributedTransactions(transaction);
+        } else {
+            // For new transaction, create distributed transactions
+            viewModel.createDistributedTransactions(transaction);
+        }
     }
 }

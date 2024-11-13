@@ -1,7 +1,9 @@
 package com.elececo.umoney.ui.income.viewmodel;
 
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import com.elececo.umoney.data.model.Transaction;
 import com.elececo.umoney.data.model.UserPreferences;
 import com.elececo.umoney.ui.base.BaseViewModel;
@@ -13,16 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class IncomeViewModel extends BaseViewModel {
-    private final FirebaseFirestore db;
-    private final FirebaseAuth auth;
-    private final MutableLiveData<UserPreferences> userPreferences;
-
     public IncomeViewModel() {
         super();
-        db = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-        userPreferences = new MutableLiveData<>();
-        loadUserPreferences();
     }
 
     @Override
@@ -31,35 +25,89 @@ public class IncomeViewModel extends BaseViewModel {
     }
 
     public LiveData<UserPreferences> getUserPreferences() {
-        return userPreferences;
+        return preferencesRepository.getUserPreferences();
     }
 
-    private void loadUserPreferences() {
-        String userId = auth.getCurrentUser().getUid();
-        db.collection("users").document(userId)
-            .get()
-            .addOnSuccessListener(document -> {
-                if (document.exists()) {
-                    Map<String, Object> data = document.getData();
-                    int needs = data.containsKey("needsPercentage") ? 
-                        ((Long) data.get("needsPercentage")).intValue() : 50;
-                    int wants = data.containsKey("wantsPercentage") ? 
-                        ((Long) data.get("wantsPercentage")).intValue() : 30;
-                    int savings = data.containsKey("savingsPercentage") ? 
-                        ((Long) data.get("savingsPercentage")).intValue() : 20;
-                    
-                    userPreferences.setValue(new UserPreferences(needs, wants, savings));
-                } else {
-                    userPreferences.setValue(new UserPreferences(50, 30, 20));
-                }
+    public void createDistributedTransactions(Transaction transaction) {
+        repository.saveTransaction(transaction)
+            .addOnSuccessListener(aVoid -> {
+                Log.d("IncomeViewModel", "Parent transaction saved with ID: " + transaction.getId());
+                getUserPreferences().observeForever(new Observer<UserPreferences>() {
+                    @Override
+                    public void onChanged(UserPreferences prefs) {
+                        if (transaction.getId() == null) {
+                            Log.e("IncomeViewModel", "Parent transaction ID is null");
+                            return;
+                        }
+                        List<Transaction> distributedTransactions = createDistributionTransactions(transaction, prefs);
+                        Log.d("IncomeViewModel", "Created " + distributedTransactions.size() + " distributed transactions");
+                        repository.saveDistributedTransactions(distributedTransactions);
+                        getUserPreferences().removeObserver(this);
+                    }
+                });
             })
             .addOnFailureListener(e -> {
-                userPreferences.setValue(new UserPreferences(50, 30, 20));
+                Log.e("IncomeViewModel", "Failed to save parent transaction", e);
             });
     }
 
-    public void distributeIncome(Transaction needs, Transaction wants, Transaction savings) {
-        List<Transaction> transactions = Arrays.asList(needs, wants, savings);
-        repository.saveDistributedTransactions(transactions);
+    public void updateDistributedTransactions(Transaction transaction) {
+        getUserPreferences().observeForever(new Observer<UserPreferences>() {
+            @Override
+            public void onChanged(UserPreferences prefs) {
+                repository.updateDistributedTransaction(transaction, prefs);
+                getUserPreferences().removeObserver(this);
+            }
+        });
+    }
+
+    private List<Transaction> createDistributionTransactions(Transaction parent, UserPreferences prefs) {
+        double amount = Math.abs(parent.getAmount());
+        
+        Transaction needs = createDistributedTransaction(
+            (amount * prefs.getNeedsPercentage()) / 100,
+            parent,
+            "NEEDS"
+        );
+        
+        Transaction wants = createDistributedTransaction(
+            (amount * prefs.getWantsPercentage()) / 100,
+            parent,
+            "WANTS"
+        );
+        
+        Transaction savings = createDistributedTransaction(
+            (amount * prefs.getSavingsPercentage()) / 100,
+            parent,
+            "SAVINGS"
+        );
+        
+        needs.setParentTransactionId(parent.getId());
+        wants.setParentTransactionId(parent.getId());
+        savings.setParentTransactionId(parent.getId());
+        
+        return Arrays.asList(needs, wants, savings);
+    }
+
+    private Transaction createDistributedTransaction(double amount, Transaction parent, String type) {
+        Transaction transaction = new Transaction(
+            amount,
+            parent.getTimestamp(),
+            "Auto Distribution",
+            "Income Distribution",
+            type
+        );
+        transaction.setParentTransactionId(parent.getId());
+        transaction.setNotes("Distributed from income: " + parent.getCategory());
+        
+        Log.d("IncomeViewModel", "Created distributed transaction - Type: " + type + 
+            ", Amount: " + amount + 
+            ", ParentId: " + parent.getId());
+        
+        return transaction;
+    }
+
+    public void refreshTransactionType(String type) {
+        repository.setupRealtimeUpdates(type);
     }
 }

@@ -18,10 +18,14 @@ import com.elececo.umoney.data.model.Transaction;
 import com.elececo.umoney.ui.common.TransactionAdapter;
 import com.elececo.umoney.ui.common.TransactionEntryDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.List;
 
 public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment 
-    implements TransactionEntryDialog.TransactionEntryListener {
+    implements TransactionEntryDialog.TransactionEntryListener, 
+    TransactionAdapter.TransactionActionListener {
     
     protected VM viewModel;
     private static final int PICK_FILE_REQUEST = 1;
@@ -53,7 +57,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
 
     private void setupRecyclerView() {
         RecyclerView transactionsList = requireView().findViewById(R.id.transactions_list);
-        adapter = new TransactionAdapter();
+        adapter = new TransactionAdapter(this);
         transactionsList.setLayoutManager(new LinearLayoutManager(requireContext()));
         transactionsList.setAdapter(adapter);
     }
@@ -149,6 +153,40 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
                 dialog.handleFilePickerResult(data.getData());
             }
         }
+    }
+
+    @Override
+    public void onEditTransaction(Transaction transaction) {
+        dialog = new TransactionEntryDialog(
+            requireContext(),
+            getTransactionType(),
+            this
+        );
+        dialog.setTransaction(transaction);
+        
+        // For IncomeFragment, hide recipient field
+        if (getTransactionType().equals("INCOME")) {
+            dialog.setOnShowListener(dialogInterface -> {
+                TextInputLayout recipientLayout = dialog.findViewById(R.id.recipient_layout);
+                if (recipientLayout != null) {
+                    recipientLayout.setVisibility(View.GONE);
+                }
+            });
+        }
+        
+        dialog.show();
+    }
+
+    @Override
+    public void onDeleteTransaction(Transaction transaction) {
+        new MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Transaction")
+            .setMessage("Are you sure you want to delete this transaction?")
+            .setPositiveButton("Delete", (dialog, which) -> {
+                viewModel.deleteTransaction(transaction);
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
     }
 
     protected abstract Class<VM> getViewModelClass();

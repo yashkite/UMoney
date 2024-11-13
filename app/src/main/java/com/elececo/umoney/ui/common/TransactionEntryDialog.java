@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -54,6 +55,8 @@ public class TransactionEntryDialog extends Dialog {
     private Uri attachmentUri;
     private Calendar calendar;
     private SimpleDateFormat dateTimeFormatter;
+    private Transaction existingTransaction;
+    private Transaction pendingTransaction;
 
     public TransactionEntryDialog(@NonNull Context context, String type, TransactionEntryListener listener) {
         super(context);
@@ -66,6 +69,12 @@ public class TransactionEntryDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_transaction_entry);
         setupViews();
+        
+        // Apply pending transaction if it exists
+        if (pendingTransaction != null) {
+            applyTransactionToViews(pendingTransaction);
+            pendingTransaction = null;
+        }
     }
 
     private void setupViews() {
@@ -135,17 +144,37 @@ public class TransactionEntryDialog extends Dialog {
                 transactionAmount = -transactionAmount;
             }
 
-            Transaction transaction = new Transaction(
-                transactionAmount,
-                calendar.getTime(),
-                recipient,
-                category,
-                type
-            );
-            transaction.setNotes(notes);
-            if (attachmentUri != null) {
-                transaction.setAttachmentUri(attachmentUri.toString());
+            Transaction transaction;
+            if (existingTransaction != null) {
+                // Update existing transaction
+                transaction = existingTransaction;
+                transaction.setAmount(transactionAmount);
+                // Only update timestamp if user has changed it
+                if (!dateTimeFormatter.format(calendar.getTime())
+                        .equals(dateTimeFormatter.format(existingTransaction.getTimestamp()))) {
+                    transaction.setTimestamp(calendar.getTime());
+                }
+                transaction.setRecipient(recipient);
+                transaction.setCategory(category);
+                transaction.setNotes(notes);
+                if (attachmentUri != null) {
+                    transaction.setAttachmentUri(attachmentUri.toString());
+                }
+            } else {
+                // Create new transaction
+                transaction = new Transaction(
+                    transactionAmount,
+                    calendar.getTime(),
+                    recipient,
+                    category,
+                    type
+                );
+                transaction.setNotes(notes);
+                if (attachmentUri != null) {
+                    transaction.setAttachmentUri(attachmentUri.toString());
+                }
             }
+            
             listener.onTransactionSaved(transaction);
             dismiss();
         }
@@ -249,6 +278,45 @@ public class TransactionEntryDialog extends Dialog {
                 );
                 categoryInput.setAdapter(categoryAdapter);
             });
+    }
+
+    public void setTransaction(Transaction transaction) {
+        if (!isShowing()) {
+            // Store transaction to be applied after dialog creation
+            this.pendingTransaction = transaction;
+            return;
+        }
+        applyTransactionToViews(transaction);
+    }
+
+    private void applyTransactionToViews(Transaction transaction) {
+        this.existingTransaction = transaction;
+        
+        if (amountInput != null) {
+            amountInput.setText(String.format(Locale.getDefault(), "%.2f", 
+                Math.abs(transaction.getAmount())));
+        }
+        if (dateTimeInput != null && dateTimeFormatter != null) {
+            // Set the calendar to the transaction's timestamp
+            calendar.setTime(transaction.getTimestamp());
+            dateTimeInput.setText(dateTimeFormatter.format(transaction.getTimestamp()));
+        }
+        if (categoryInput != null) {
+            categoryInput.setText(transaction.getCategory());
+        }
+        if (recipientInput != null) {
+            recipientInput.setText(transaction.getRecipient());
+        }
+        if (notesInput != null) {
+            notesInput.setText(transaction.getNotes());
+        }
+        
+        if (transaction.getAttachmentUri() != null && attachmentButton != null) {
+            attachmentUri = Uri.parse(transaction.getAttachmentUri());
+            attachmentButton.setText(attachmentUri.getLastPathSegment());
+        }
+        
+        titleView.setText("Edit " + type);
     }
 
     public interface TransactionEntryListener {
