@@ -111,8 +111,12 @@ public class IncomeFragment extends BaseFragment<IncomeViewModel> {
         
         // Check if this is an edit (transaction has ID) or new transaction
         if (transaction.getId() != null) {
-            // For existing transaction, update parent and distributed transactions
-            viewModel.updateDistributedTransactions(transaction);
+            // First save the parent transaction
+            viewModel.saveTransaction(transaction)
+                .addOnSuccessListener(aVoid -> {
+                    // Then update distributed transactions
+                    viewModel.updateDistributedTransactions(transaction);
+                });
         } else {
             // For new transaction, create distributed transactions
             viewModel.createDistributedTransactions(transaction);

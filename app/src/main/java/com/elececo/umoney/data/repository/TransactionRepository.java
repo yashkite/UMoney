@@ -17,10 +17,12 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.WriteBatch;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -276,6 +278,10 @@ public class TransactionRepository {
     }
 
     private void updateDistributedAmount(Transaction transaction, double parentAmount, UserPreferences prefs) {
+        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+        String parentAmountStr = format.format(Math.abs(parentAmount));
+        transaction.setRecipient("From Income: " + parentAmountStr);
+
         switch (transaction.getType()) {
             case "NEEDS":
                 transaction.setAmount((parentAmount * prefs.getNeedsPercentage()) / 100);

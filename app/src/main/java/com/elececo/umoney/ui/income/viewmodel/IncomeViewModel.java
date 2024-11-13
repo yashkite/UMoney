@@ -9,9 +9,11 @@ import com.elececo.umoney.data.model.UserPreferences;
 import com.elececo.umoney.ui.base.BaseViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class IncomeViewModel extends BaseViewModel {
@@ -90,10 +92,13 @@ public class IncomeViewModel extends BaseViewModel {
     }
 
     private Transaction createDistributedTransaction(double amount, Transaction parent, String type) {
+        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+        String parentAmountStr = format.format(Math.abs(parent.getAmount()));
+        
         Transaction transaction = new Transaction(
             amount,
             parent.getTimestamp(),
-            "Auto Distribution",
+            "From Income: " + parentAmountStr,
             "Income Distribution",
             type
         );

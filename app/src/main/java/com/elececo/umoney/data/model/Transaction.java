@@ -10,7 +10,6 @@ public class Transaction {
     private String recipient;
     private String category;
     private String type;
-    private String userId;
     private String notes;
     private String attachmentUri;
     private String parentTransactionId;
@@ -73,14 +72,6 @@ public class Transaction {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getNotes() {
