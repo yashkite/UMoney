@@ -32,6 +32,6 @@ public class SavingsFragment extends BaseFragment<SavingsViewModel> {
 
     @Override
     protected boolean isExpenseType() {
-        return false;
+        return true;
     }
 }

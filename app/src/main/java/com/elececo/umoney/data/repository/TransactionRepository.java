@@ -262,6 +262,7 @@ public class TransactionRepository {
                     Transaction distributedTransaction = doc.toObject(Transaction.class);
                     if (distributedTransaction != null) {
                         double oldAmount = distributedTransaction.getAmount();
+                        distributedTransaction.setTimestamp(parentTransaction.getTimestamp());
                         updateDistributedAmount(distributedTransaction, amount, prefs);
                         Log.d("TransactionRepository", "Updating " + distributedTransaction.getType() + 
                             " from " + oldAmount + " to " + distributedTransaction.getAmount());
