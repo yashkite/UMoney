@@ -1,5 +1,6 @@
 package com.elececo.umoney.ui.income.viewmodel;
 
+import android.content.Context;
 import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,8 +18,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class IncomeViewModel extends BaseViewModel {
-    public IncomeViewModel() {
-        super();
+    public IncomeViewModel(Context context) {
+        super(context);
     }
 
     @Override

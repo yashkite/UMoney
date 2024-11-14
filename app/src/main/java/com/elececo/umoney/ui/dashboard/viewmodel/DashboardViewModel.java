@@ -1,5 +1,6 @@
 package com.elececo.umoney.ui.dashboard.viewmodel;
 
+import android.content.Context;
 import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,8 +18,8 @@ public class DashboardViewModel extends BaseViewModel {
     private FirebaseFirestore db;
     private FirebaseAuth auth;
 
-    public DashboardViewModel() {
-        super();
+    public DashboardViewModel(Context context) {
+        super(context);
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         Log.d(TAG, "DashboardViewModel initialized");

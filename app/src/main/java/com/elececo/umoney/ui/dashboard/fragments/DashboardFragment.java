@@ -105,6 +105,5 @@ public class DashboardFragment extends BaseFragment<DashboardViewModel> {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
     }
 } 

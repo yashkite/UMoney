@@ -1,5 +1,6 @@
 package com.elececo.umoney.data.repository;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -7,6 +8,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.elececo.umoney.data.model.Transaction;
 import com.elececo.umoney.data.model.UserPreferences;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,18 +29,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.elececo.umoney.utils.DriveServiceHelper;
+
 public class TransactionRepository {
     private static final String COLLECTION_USERS = "users";
     private static final String COLLECTION_TRANSACTIONS = "transactions";
     private final FirebaseFirestore db;
     private final FirebaseAuth auth;
     private final Map<String, MutableLiveData<List<Transaction>>> transactionListMap;
-    private final Map<String, ListenerRegistration> listeners = new HashMap<>();
+    private final Map<String, ListenerRegistration> listeners;
+    private final Context context;
 
-    public TransactionRepository() {
+    public TransactionRepository(Context context) {
+        this.context = context.getApplicationContext();
         this.db = FirebaseFirestore.getInstance();
         this.auth = FirebaseAuth.getInstance();
         this.transactionListMap = new HashMap<>();
+        this.listeners = new HashMap<>();
     }
 
     public LiveData<List<Transaction>> getTransactionsByType(String type) {
@@ -140,7 +148,36 @@ public class TransactionRepository {
         
         String userId = auth.getCurrentUser().getUid();
         
-        // First, find all distributed transactions
+        // Delete attachment from Drive if exists
+        if (transaction.getDriveFileId() != null) {
+            try {
+                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+                if (account != null) {
+                    DriveServiceHelper driveHelper = new DriveServiceHelper(context, account);
+                    driveHelper.deleteFile(transaction.getDriveFileId())
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Log.d("TransactionRepository", "Attachment deleted successfully");
+                            } else {
+                                Log.e("TransactionRepository", 
+                                    "Failed to delete attachment: " + task.getException().getMessage());
+                            }
+                            // Continue with transaction deletion regardless of attachment deletion result
+                            deleteTransactionFromFirestore(transaction, userId);
+                        });
+                } else {
+                    deleteTransactionFromFirestore(transaction, userId);
+                }
+            } catch (Exception e) {
+                Log.e("TransactionRepository", "Failed to initialize Drive: " + e.getMessage());
+                deleteTransactionFromFirestore(transaction, userId);
+            }
+        } else {
+            deleteTransactionFromFirestore(transaction, userId);
+        }
+    }
+
+    private void deleteTransactionFromFirestore(Transaction transaction, String userId) {
         db.collection(COLLECTION_USERS)
             .document(userId)
             .collection(COLLECTION_TRANSACTIONS)
@@ -152,25 +189,23 @@ public class TransactionRepository {
                 
                 // Add all distributed transactions to delete batch
                 for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                    batch.delete(doc.getReference());
                     Transaction distributedTransaction = doc.toObject(Transaction.class);
                     if (distributedTransaction != null) {
-                        batch.delete(doc.getReference());
                         typesToUpdate.add(distributedTransaction.getType());
                     }
                 }
                 
-                // Add parent transaction to delete batch
-                DocumentReference parentRef = db.collection(COLLECTION_USERS)
+                // Add main transaction to delete batch
+                DocumentReference mainTransactionRef = db.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_TRANSACTIONS)
                     .document(transaction.getId());
-                batch.delete(parentRef);
-                typesToUpdate.add(transaction.getType());
+                batch.delete(mainTransactionRef);
                 
-                // Commit the batch delete
+                // Commit the batch
                 batch.commit()
                     .addOnSuccessListener(aVoid -> {
-                        Log.d("TransactionRepository", "Successfully deleted parent and distributed transactions");
                         for (String type : typesToUpdate) {
                             setupRealtimeUpdates(type);
                         }
@@ -178,9 +213,6 @@ public class TransactionRepository {
                     .addOnFailureListener(e -> {
                         Log.e("TransactionRepository", "Failed to delete transactions", e);
                     });
-            })
-            .addOnFailureListener(e -> {
-                Log.e("TransactionRepository", "Failed to query distributed transactions", e);
             });
     }
 

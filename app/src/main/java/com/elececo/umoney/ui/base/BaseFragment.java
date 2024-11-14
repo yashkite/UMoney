@@ -1,25 +1,32 @@
 package com.elececo.umoney.ui.base;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.elececo.umoney.R;
 import com.elececo.umoney.data.model.Transaction;
 import com.elececo.umoney.ui.common.TransactionAdapter;
 import com.elececo.umoney.ui.common.TransactionEntryDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
+import android.content.Context;
 
 import java.util.List;
 
@@ -31,11 +38,23 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     private static final int PICK_FILE_REQUEST = 1;
     protected TransactionEntryDialog dialog;
     protected TransactionAdapter adapter;
+    private static final int PERMISSION_REQUEST_CODE = 123;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(getViewModelClass());
+        viewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                try {
+                    return modelClass.getConstructor(Context.class)
+                        .newInstance(requireContext().getApplicationContext());
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to create ViewModel", e);
+                }
+            }
+        }).get(getViewModelClass());
         
         if (hasTransactionList()) {
             setupRecyclerView();
@@ -137,6 +156,29 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
 
     @Override
     public void launchFilePicker() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(),
+                    Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO
+                }, PERMISSION_REQUEST_CODE);
+            } else {
+                startFilePicker();
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }, PERMISSION_REQUEST_CODE);
+            } else {
+                startFilePicker();
+            }
+        }
+    }
+
+    private void startFilePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -149,8 +191,12 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_FILE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            if (dialog != null) {
+            if (dialog != null && data.getData() != null) {
                 dialog.handleFilePickerResult(data.getData());
+            } else {
+                Toast.makeText(requireContext(), 
+                    "Failed to get selected file", 
+                    Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -187,6 +233,20 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
             })
             .setNegativeButton("Cancel", null)
             .show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, 
+        @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startFilePicker();
+            } else {
+                Toast.makeText(requireContext(),
+                    "Storage permission required to attach files", 
+                    Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     protected abstract Class<VM> getViewModelClass();

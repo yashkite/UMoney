@@ -10,14 +10,15 @@ import com.elececo.umoney.data.repository.UserPreferencesRepository;
 import com.elececo.umoney.data.model.UserPreferences;
 import android.util.Log;
 import com.google.android.gms.tasks.Task;
+import android.content.Context;
 
 public abstract class BaseViewModel extends ViewModel {
     protected final TransactionRepository repository;
     protected final UserPreferencesRepository preferencesRepository;
     private final LiveData<List<Transaction>> transactions;
 
-    public BaseViewModel() {
-        repository = new TransactionRepository();
+    public BaseViewModel(Context context) {
+        repository = new TransactionRepository(context.getApplicationContext());
         preferencesRepository = new UserPreferencesRepository();
         transactions = repository.getTransactionsByType(getTransactionType());
     }
