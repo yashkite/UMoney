@@ -1,0 +1,82 @@
+name: Android CI - Stable
+
+on:
+  push:
+    branches:
+      - main
+      - stable
+  pull_request:
+    branches:
+      - main
+      - stable
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Run Tests
+      run: ./gradlew test
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Build Release APK
+      run: ./gradlew assembleRelease
+
+    - name: Sign APK
+      uses: r0adkll/sign-android-release@v1
+      with:
+        releaseDirectory: app/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+        alias: ${{ secrets.KEY_ALIAS }}
+        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-release
+        path: app/build/outputs/apk/release/app-release-signed.apk
+
+    - name: Create Release
+      if: github.ref == 'refs/heads/stable'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: app/build/outputs/apk/release/app-release-signed.apk
+        tag_name: v${{ env.NEW_VERSION }}
+        name: "Release v${{ env.NEW_VERSION }}"
+        body: |
+          UMoney Release v${{ env.NEW_VERSION }}
+          
+          Changes in this version:
+          ${{ github.event.head_commit.message }}
+        prerelease: ${{ github.ref != 'refs/heads/stable' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
