@@ -19,6 +19,7 @@ public class AboutActivity extends AppCompatActivity {
         setupToolbar();
         setupVersionInfo();
         setupEmailSupport();
+        setupGithubLink();
     }
 
     private void setupToolbar() {
@@ -41,6 +42,15 @@ public class AboutActivity extends AppCompatActivity {
             intent.setData(Uri.parse("mailto:contact@elececo.com"));
             intent.putExtra(Intent.EXTRA_SUBJECT, "UMoney Support");
             startActivity(Intent.createChooser(intent, "Send Email"));
+        });
+    }
+
+    private void setupGithubLink() {
+        TextView githubLink = findViewById(R.id.github_link);
+        githubLink.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://github.com/yashkite/UMoney"));
+            startActivity(Intent.createChooser(intent, "View GitHub Repository"));
         });
     }
 
