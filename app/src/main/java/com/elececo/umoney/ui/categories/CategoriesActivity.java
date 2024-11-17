@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 import java.util.List;
+import android.content.res.Configuration;
+import androidx.annotation.NonNull;
 
 public class CategoriesActivity extends AppCompatActivity {
     private CategoriesViewModel viewModel;
@@ -26,12 +28,20 @@ public class CategoriesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
         
+        getDelegate().applyDayNight();
+        
         viewModel = new ViewModelProvider(this).get(CategoriesViewModel.class);
         
         setupViews();
         setupToolbar();
         setupTabs();
         setupObservers();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        recreate();
     }
 
     private void setupViews() {
