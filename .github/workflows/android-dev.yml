@@ -51,7 +51,14 @@ jobs:
       run: ./gradlew test
 
     - name: Check Dependency Updates
-      run: ./gradlew dependencyUpdates
+      continue-on-error: true  # Allow the build to continue even if updates are available
+      run: |
+        ./gradlew dependencyUpdates || true
+        if [ -f "build/dependencyUpdates/report.txt" ]; then
+          echo "::group::Dependency Updates Available"
+          cat build/dependencyUpdates/report.txt
+          echo "::endgroup::"
+        fi
 
   build:
     needs: primary-checks
