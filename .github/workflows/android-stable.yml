@@ -66,11 +66,17 @@ jobs:
         path: app/build/outputs/apk/release/app-release-signed.apk
 
     - name: Create Release
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/stable'
       uses: softprops/action-gh-release@v1
       with:
         files: app/build/outputs/apk/release/app-release-signed.apk
-        tag_name: v${{ github.run_number }}
-        prerelease: false
+        tag_name: v${{ env.NEW_VERSION }}
+        name: "Release v${{ env.NEW_VERSION }}"
+        body: |
+          UMoney Release v${{ env.NEW_VERSION }}
+          
+          Changes in this version:
+          ${{ github.event.head_commit.message }}
+        prerelease: ${{ github.ref != 'refs/heads/stable' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

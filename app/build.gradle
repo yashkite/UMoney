@@ -10,8 +10,14 @@ android {
         applicationId "com.elececo.umoney"
         minSdk 23
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        
+        // Version format: major.minor.patch
+        def versionMajor = 0
+        def versionMinor = 1
+        def versionPatch = project.hasProperty('versionPatch') ? project.property('versionPatch') : 0
+        
+        versionCode = (versionMajor * 10000) + (versionMinor * 100) + versionPatch
+        versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -24,8 +30,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     namespace 'com.elececo.umoney'
@@ -34,6 +40,14 @@ android {
         resources {
             excludes += ['META-INF/DEPENDENCIES']
         }
+    }
+
+    lintOptions {
+        abortOnError true
+        warningsAsErrors true
+        checkAllWarnings true
+        htmlReport true
+        htmlOutput file("${project.buildDir}/reports/lint/lint-results.html")
     }
 }
 
@@ -45,7 +59,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0'
 
     // Firebase (versions managed by BOM)
-    implementation platform('com.google.firebase:firebase-bom:33.5.1')
+    implementation platform('com.google.firebase:firebase-bom:33.6.0')
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
 
@@ -76,4 +90,19 @@ dependencies {
     implementation 'com.google.android.gms:play-services-drive:17.0.0'
     implementation 'com.google.api-client:google-api-client-android:2.2.0'
     implementation 'com.google.apis:google-api-services-drive:v3-rev20230822-2.0.0'
+
+    // Development dependencies
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+    
+    // Testing dependencies
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+
+    // OkHttp
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
+    // Preference
+    implementation 'androidx.preference:preference:1.2.1'
 }

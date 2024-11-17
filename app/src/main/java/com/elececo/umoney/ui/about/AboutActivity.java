@@ -38,7 +38,7 @@ public class AboutActivity extends AppCompatActivity {
         TextView emailSupport = findViewById(R.id.email_support);
         emailSupport.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:support@umoney.com"));
+            intent.setData(Uri.parse("mailto:contact@elececo.com"));
             intent.putExtra(Intent.EXTRA_SUBJECT, "UMoney Support");
             startActivity(Intent.createChooser(intent, "Send Email"));
         });
