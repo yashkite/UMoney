@@ -11,7 +11,9 @@ on:
 
 jobs:
   version-bump:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/stable')
     runs-on: ubuntu-latest
     permissions:
       contents: write

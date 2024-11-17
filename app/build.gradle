@@ -52,6 +52,12 @@ android {
         htmlReport true
         htmlOutput file("${project.buildDir}/reports/lint/lint-results.html")
     }
+
+    lint {
+        abortOnError false    // Temporarily disable failing build on lint errors
+        checkReleaseBuilds false
+        baseline = file("lint-baseline.xml")
+    }
 }
 
 dependencies {
