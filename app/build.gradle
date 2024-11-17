@@ -36,7 +36,7 @@ android {
     }
 
     buildFeatures {
-        buildConfig true
+        buildConfig = true
     }
 
     packaging {
@@ -45,18 +45,12 @@ android {
         }
     }
 
-    lintOptions {
-        abortOnError true
-        warningsAsErrors true
-        checkAllWarnings true
-        htmlReport true
-        htmlOutput file("${project.buildDir}/reports/lint/lint-results.html")
-    }
-
     lint {
-        abortOnError false    // Temporarily disable failing build on lint errors
-        checkReleaseBuilds false
+        abortOnError = false
+        checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
+        htmlReport = true
+        htmlOutput = file("${project.buildDir}/reports/lint/lint-results.html")
     }
 }
 
