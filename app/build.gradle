@@ -14,7 +14,7 @@ android {
         // Version format: major.minor.patch
         def versionMajor = 0
         def versionMinor = 1
-        def versionPatch = project.hasProperty('versionPatch') ? project.property('versionPatch') : 0
+        def versionPatch = 1
         
         versionCode = (versionMajor * 10000) + (versionMinor * 100) + versionPatch
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
