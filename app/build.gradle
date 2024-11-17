@@ -4,17 +4,18 @@ plugins {
 }
 
 android {
+    namespace 'com.elececo.umoney'
     compileSdk 34
 
     defaultConfig {
         applicationId "com.elececo.umoney"
         minSdk 23
-        targetSdk 33
+        targetSdk 34
         
         // Version format: major.minor.patch
         def versionMajor = 0
-        def versionMinor = 1
-        def versionPatch = 1
+        def versionMinor = 2
+        def versionPatch = 0
         
         versionCode = (versionMajor * 10000) + (versionMinor * 100) + versionPatch
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -34,7 +35,9 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    namespace 'com.elececo.umoney'
+    buildFeatures {
+        buildConfig true
+    }
 
     packaging {
         resources {

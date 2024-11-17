@@ -1,17 +1,17 @@
 name: Version Bump
 
 on:
-  push:
+  workflow_run:
+    workflows: ['Android CI - Development', 'Android CI - Stable']
+    types:
+      - completed
     branches:
       - dev
       - stable
-    paths-ignore:
-      - '**.md'
-      - '.gitignore'
-      - '.github/**'
 
 jobs:
   version-bump:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
