@@ -1,0 +1,79 @@
+name: Android Build and Run Check
+
+on:
+  push:
+    branches: [ '**' ]  # Matches all branches
+  pull_request:
+    branches: [ '**' ]  # Matches all branches
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon
+
+      - name: Run Android Tests
+        run: ./gradlew test
+
+      - name: AVD Cache
+        uses: actions/cache@v3
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ runner.os }}
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          profile: pixel
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Install and Launch App
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          profile: pixel
+          script: |
+            adb install app/build/outputs/apk/debug/app-debug.apk
+            # Get your app's main activity from AndroidManifest.xml
+            APP_PACKAGE=$(grep -o 'package="[^"]*"' app/src/main/AndroidManifest.xml | cut -d'"' -f2)
+            MAIN_ACTIVITY=$(grep -A 1 'android.intent.action.MAIN' app/src/main/AndroidManifest.xml | grep -o 'android:name="[^"]*"' | cut -d'"' -f2)
+            # Launch the app
+            adb shell am start -n "$APP_PACKAGE/$MAIN_ACTIVITY"
+            # Wait for app to start
+            sleep 10
+            # Check if app is running and didn't crash
+            APP_PID=$(adb shell ps | grep $APP_PACKAGE | awk '{print $2}')
+            if [ -z "$APP_PID" ]; then
+              echo "App crashed or failed to start!"
+              exit 1
+            else
+              echo "App is running successfully with PID: $APP_PID"
+            fi
+
+      - name: Upload build reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-reports
+          path: app/build/reports/
