@@ -50,4 +50,6 @@
     <color name="positive_balance_dark">#66BB6A</color>
     <color name="negative_balance_dark">#EF5350</color>
     <color name="hold_balance_dark">#42A5F5</color>
+
+    <color name="selection_highlight">#1A2196F3</color>
 </resources>

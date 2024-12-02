@@ -13,17 +13,22 @@ import com.elececo.umoney.R;
 import com.elececo.umoney.data.model.Transaction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
     private List<Transaction> transactions = new ArrayList<>();
     private final SimpleDateFormat dateFormat;
     private final TransactionActionListener actionListener;
+    private final Set<Transaction> selectedItems = new HashSet<>();
+    private boolean isSelectionMode = false;
 
     public interface TransactionActionListener {
         void onEditTransaction(Transaction transaction);
         void onDeleteTransaction(Transaction transaction);
+        void onSelectionChanged(int count);
     }
 
     public TransactionAdapter(TransactionActionListener listener) {
@@ -53,7 +58,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Transaction transaction = transactions.get(position);
-        holder.bind(transaction, dateFormat, actionListener);
+        holder.bind(transaction, dateFormat, actionListener, 
+                   selectedItems.contains(transaction), isSelectionMode, this);
     }
 
     @Override
@@ -114,6 +120,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         TextView categoryText;
         TextView dateText;
         ImageButton optionsButton;
+        private final View itemContainer;
 
         ViewHolder(View view) {
             super(view);
@@ -122,29 +129,75 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             categoryText = view.findViewById(R.id.transaction_category);
             dateText = view.findViewById(R.id.transaction_date);
             optionsButton = view.findViewById(R.id.options_button);
+            itemContainer = view.findViewById(R.id.item_container);
         }
 
-        void bind(Transaction transaction, SimpleDateFormat dateFormat, TransactionActionListener listener) {
+        void bind(Transaction transaction, SimpleDateFormat dateFormat, 
+                 TransactionActionListener listener, boolean isSelected, boolean isSelectionMode,
+                 TransactionAdapter adapter) {
             amountText.setText(String.format("₹%.2f", transaction.getAmount()));
             recipientText.setText(transaction.getRecipient());
             categoryText.setText(transaction.getCategory());
             dateText.setText(dateFormat.format(transaction.getTimestamp()));
 
-            optionsButton.setOnClickListener(v -> {
-                PopupMenu popup = new PopupMenu(v.getContext(), v);
-                popup.inflate(R.menu.menu_transaction_options);
-                popup.setOnMenuItemClickListener(item -> {
-                    if (item.getItemId() == R.id.action_edit) {
-                        listener.onEditTransaction(transaction);
-                        return true;
-                    } else if (item.getItemId() == R.id.action_delete) {
-                        listener.onDeleteTransaction(transaction);
-                        return true;
-                    }
-                    return false;
-                });
-                popup.show();
+            itemContainer.setBackgroundColor(isSelected ? 
+                itemView.getContext().getColor(R.color.selection_highlight) : 
+                itemView.getContext().getColor(R.color.card_background_light));
+
+            itemView.setOnLongClickListener(v -> {
+                if (!isSelectionMode) {
+                    adapter.toggleSelection(transaction);
+                    return true;
+                }
+                return false;
             });
+
+            itemView.setOnClickListener(v -> {
+                if (isSelectionMode) {
+                    adapter.toggleSelection(transaction);
+                }
+            });
+
+            optionsButton.setVisibility(isSelectionMode ? View.GONE : View.VISIBLE);
+            if (!isSelectionMode) {
+                optionsButton.setOnClickListener(v -> {
+                    PopupMenu popup = new PopupMenu(v.getContext(), v);
+                    popup.inflate(R.menu.menu_transaction_options);
+                    popup.setOnMenuItemClickListener(item -> {
+                        int itemId = item.getItemId();
+                        if (itemId == R.id.action_edit) {
+                            listener.onEditTransaction(transaction);
+                            return true;
+                        } else if (itemId == R.id.action_delete) {
+                            listener.onDeleteTransaction(transaction);
+                            return true;
+                        }
+                        return false;
+                    });
+                    popup.show();
+                });
+            }
         }
+    }
+
+    public void toggleSelection(Transaction transaction) {
+        if (selectedItems.contains(transaction)) {
+            selectedItems.remove(transaction);
+        } else {
+            selectedItems.add(transaction);
+        }
+        isSelectionMode = !selectedItems.isEmpty();
+        actionListener.onSelectionChanged(selectedItems.size());
+        notifyDataSetChanged();
+    }
+
+    public void clearSelection() {
+        selectedItems.clear();
+        isSelectionMode = false;
+        notifyDataSetChanged();
+    }
+
+    public Set<Transaction> getSelectedItems() {
+        return new HashSet<>(selectedItems);
     }
 } 

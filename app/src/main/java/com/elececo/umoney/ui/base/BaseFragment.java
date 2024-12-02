@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +32,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import android.content.Context;
 
 import java.util.List;
+import java.util.Set;
 
 public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment 
     implements TransactionEntryDialog.TransactionEntryListener, 
@@ -39,6 +43,37 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     protected TransactionEntryDialog dialog;
     protected TransactionAdapter adapter;
     private static final int PERMISSION_REQUEST_CODE = 123;
+    private ActionMode actionMode;
+    private MenuItem deleteMenuItem;
+
+    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_contextual_action, menu);
+            deleteMenuItem = menu.findItem(R.id.action_delete_selected);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            if (item.getItemId() == R.id.action_delete_selected) {
+                showDeleteSelectedConfirmation();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            actionMode = null;
+            adapter.clearSelection();
+        }
+    };
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -247,6 +282,33 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
                     Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onSelectionChanged(int count) {
+        if (count > 0) {
+            if (actionMode == null) {
+                actionMode = requireActivity().startActionMode(actionModeCallback);
+            }
+            actionMode.setTitle(count + " Selected");
+        } else if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
+
+    private void showDeleteSelectedConfirmation() {
+        Set<Transaction> selectedItems = adapter.getSelectedItems();
+        new MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Transactions")
+            .setMessage("Are you sure you want to delete " + selectedItems.size() + " transactions?")
+            .setPositiveButton("Delete", (dialog, which) -> {
+                for (Transaction transaction : selectedItems) {
+                    viewModel.deleteTransaction(transaction);
+                }
+                actionMode.finish();
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
     }
 
     protected abstract Class<VM> getViewModelClass();
